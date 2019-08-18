@@ -13,7 +13,7 @@ import java.io.File;
  */
 public class Main {
     public static void main(String[] args) {
-        String ruta = "C:/Users/carlo/Documents/NetBeansProjects/miniSQL/src/AnalizadorLexico/Lexer.flex";
+        String ruta = "C:/Users/carlo/Documents/NetBeansProjects/analizador-lexico-miniSQL/src/AnalizadorLexico/Lexer.flex";
         generarLexema(ruta);
     }
     
@@ -22,3 +22,4 @@ public class Main {
         jflex.Main.generate(file);
     }
 }
+    

@@ -13,6 +13,6 @@ public enum Tokens {
     Reservada,
     Operador,
     Identificador,
-    Numero,
+    Constante,
     Error
 }

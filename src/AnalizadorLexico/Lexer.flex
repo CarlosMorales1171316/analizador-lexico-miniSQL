@@ -5,7 +5,18 @@ import static AnalizadorLexico.Tokens.*;
 %type Tokens
 Letra=[a-zA-Z_]+
 Digito=[0-9]+
-Espacio=[ ,\t,\r,\n]+
+/*Espacios en blanco*/
+Espacio=[ ,\t,\r,\n]+   
+LineTerminator = \r|\n|\r\n
+InputCharacter = [^\r\n]
+WhiteSpace = {LineTerminator} | [ \t\f]
+/*Comentarios*/
+TraditionalComment = "/*" [^*] ~"*/" | "/*" "*"+ "/"
+/* EndOfLineComment = "//" {InputCharacter}* {LineTerminator}?  */
+DocumentationComment = "/**" {CommentContent} "*"+ "/"
+CommentContent = ( [^*] | \*+ [^/*] )*
+SQLComment = "--" {InputCharacter}*
+Comment = {TraditionalComment} | {DocumentationComment} | {SQLComment}
 %{
     public String lexema;
 %}
@@ -706,7 +717,8 @@ REGR_SYY |
 ZONE | 
 while {lexema=yytext(); return Reservada;}
 {Espacio} {/*Ignore*/}
-"--".* {/*Ignore*/} 
+{WhiteSpace} {/*Ignore*/}
+{Comment} {/*Ignore*/}
 "+" |
 "-" |
 "*" |
@@ -739,5 +751,5 @@ while {lexema=yytext(); return Reservada;}
 "##" |
 while {lexema=yytext(); return Operador;}   
 {Letra}({Letra}|{Digito})* {lexema=yytext(); return Identificador;}
-("(-"{Digito}+")")|{Digito}+ {lexema=yytext(); return Numero;}
- . {return Error;}
+("(-"{Digito}+")")|{Digito}+ {lexema=yytext(); return Constante;}
+ . {lexema=yytext(); return Error;}
