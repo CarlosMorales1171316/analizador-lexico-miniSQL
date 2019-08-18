@@ -91,7 +91,7 @@ public class FormMain extends javax.swing.JFrame {
 
             },
             new String [] {
-                "", ""
+                "# Linea", "Palabra Analizada", "Token"
             }
         ));
         jScrollPane2.setViewportView(tblScanner);
@@ -152,20 +152,25 @@ public class FormMain extends javax.swing.JFrame {
                     return;
                 }
                 switch (tokens) {
-                    case Error:
-                        resultado += lexer.lexema + "   " + tokens + "\n";
-                        String [] fila = {lexer.lexema,tokens.toString()};
-                        tabla.addRow(fila);
+                    case Error_Caracter_Invalido:
+                        resultado += lexer.toString + "   " + tokens + "\n";
+                        String [] fila1 = {lexer.getLinea.toString(),lexer.toString,tokens.toString()};
+                        tabla.addRow(fila1);
                         break;
-                    case Identificador: case Reservada: case Operador: 
-                        resultado += lexer.lexema + "   " + tokens + "\n";
-                        String [] fila2 = {lexer.lexema,tokens.toString()};
+                    case Error_Comentario:
+                        resultado += "Error de comentario" + "   " + tokens + "\n";
+                        String [] fila2 = {lexer.getLinea.toString(),"Error de comentario",tokens.toString()};
                         tabla.addRow(fila2);
                         break;
-                    case Constante:
-                        resultado += lexer.lexema + "   " + tokens + "\n";
-                        String [] fila3 = {lexer.lexema,tokens.toString()};
+                    case Identificador: case Reservada: case Operador: 
+                        resultado += lexer.toString + "   " + tokens + "\n";
+                        String [] fila3 = {lexer.getLinea.toString(),lexer.toString,tokens.toString()};
                         tabla.addRow(fila3);
+                        break;
+                    case Constante:
+                        resultado += lexer.toString + "   " + tokens + "\n";
+                        String [] fila4 = {lexer.getLinea.toString(),lexer.toString,tokens.toString()};
+                        tabla.addRow(fila4);
                     default:
                         break;
                 }

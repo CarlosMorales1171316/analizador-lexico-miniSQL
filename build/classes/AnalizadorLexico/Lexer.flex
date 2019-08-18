@@ -1,26 +1,61 @@
 package AnalizadorLexico;
 import static AnalizadorLexico.Tokens.*;
+import java.util.ArrayList;
 %%
 %class Lexer
 %type Tokens
-Letra=[a-zA-Z_]+
-Digito=[0-9]+
+%unicode 9.0
+%line
+%column
+
+/*Alfabeto-Diccionarios*/
+Letra=[a-zA-Z]+
+LetraGuion=[a-zA-Z_]+
+Digito=0|[1-9][0-9]*
+
+/*Identificador*/
+Identificador = {Letra}({LetraGuion}|{Digito})* 
+
+/*Constantes*/
+Entero=[1-9][0-9]* | "-"[1-9][0-9]* 
+Decimal=[0-9]+ ["."][0-9]* | "-"[0-9]+ ["."][0-9]*
+Exponencial= (([0-9]+ [e|E] ["+"|"-"] [0-9]*) | ([0-9] + [e|E] [0-9]*)) | ((-[0-9]+ [e|E] ["+"|"-"] [0-9]*) | ([0-9] + [e|E] [0-9]*))
+
 /*Espacios en blanco*/
-Espacio=[ ,\t,\r,\n]+   
+/* Espacio=[ ,\t,\r,\n]+  */
 LineTerminator = \r|\n|\r\n
 InputCharacter = [^\r\n]
 WhiteSpace = {LineTerminator} | [ \t\f]
+
 /*Comentarios*/
-TraditionalComment = "/*" [^*] ~"*/" | "/*" "*"+ "/"
-/* EndOfLineComment = "//" {InputCharacter}* {LineTerminator}?  */
-DocumentationComment = "/**" {CommentContent} "*"+ "/"
-CommentContent = ( [^*] | \*+ [^/*] )*
-SQLComment = "--" {InputCharacter}*
-Comment = {TraditionalComment} | {DocumentationComment} | {SQLComment}
+SQLSingleLineComment = "--" {InputCharacter}*
+SQLMultiLineComment = "/*" [^*] ~"*/"
+Comment = {SQLSingleLineComment} | {SQLMultiLineComment}
+
+/*toString*/
 %{
-    public String lexema;
+    public String toString;
 %}
+/*getLinea*/
+%{
+    public Integer getLinea;
+%}
+/*Listas*/
+%{
+    ArrayList<String> IdentificadoresLista = new ArrayList<>();
+%}
+%{
+    ArrayList<String> ReservadasLista = new ArrayList<>();
+%}
+%{
+    ArrayList<String> ConstantesLista = new ArrayList<>();
+%}
+%{
+    ArrayList<String> OperadoresLista = new ArrayList<>();
+%}
+
 %%
+/*Reservadas*/
 ADD |      
 EXTERNAL |      
 PROCEDURE |      
@@ -715,8 +750,15 @@ YEAR |
 HOLD |     
 REGR_SYY |     
 ZONE | 
-while {lexema=yytext(); return Reservada;}
-{Espacio} {/*Ignore*/}
+while { if(ReservadasLista.contains(yytext())){
+        getLinea=yyline; toString=yytext(); return Reservada;
+      } else {
+        ReservadasLista.add(yytext()); 
+        getLinea=yyline; 
+        toString=yytext(); 
+        return Reservada; 
+      }
+} 
 {WhiteSpace} {/*Ignore*/}
 {Comment} {/*Ignore*/}
 "+" |
@@ -749,7 +791,55 @@ while {lexema=yytext(); return Reservada;}
 "@" |
 "#" |    
 "##" |
-while {lexema=yytext(); return Operador;}   
-{Letra}({Letra}|{Digito})* {lexema=yytext(); return Identificador;}
-("(-"{Digito}+")")|{Digito}+ {lexema=yytext(); return Constante;}
- . {lexema=yytext(); return Error;}
+while { if(OperadoresLista.contains(yytext())){
+        getLinea=yyline; toString=yytext(); return Operador;
+      } else {
+        OperadoresLista.add(yytext()); 
+        getLinea=yyline;  
+        toString=yytext();
+        return Operador; 
+      }
+}
+
+{Identificador} { if(IdentificadoresLista.contains(yytext())){
+        getLinea=yyline; toString=yytext(); return Identificador;
+      } else {
+        IdentificadoresLista.add(yytext()); 
+        getLinea=yyline;  
+        toString=yytext();
+        return Identificador; 
+      }
+}
+
+{Entero} { if(ConstantesLista.contains(yytext())){
+        getLinea=yyline; toString=yytext(); return Constante;
+      } else {
+        ConstantesLista.add(yytext()); 
+        getLinea=yyline;
+        toString=yytext();  
+        return Constante; 
+      }
+}
+
+{Decimal} { if(ConstantesLista.contains(yytext())){
+        getLinea=yyline; toString=yytext(); return Constante;
+      } else {
+        ConstantesLista.add(yytext()); 
+        getLinea=yyline; 
+        toString=yytext(); 
+        return Constante; 
+      }
+}
+{Exponencial} { if(ConstantesLista.contains(yytext())){
+        getLinea=yyline; toString=yytext(); return Constante;
+      } else {
+        ConstantesLista.add(yytext()); 
+        getLinea=yyline;
+        toString=yytext();  
+        return Constante; 
+      }
+}
+
+/*Errores*/
+["\*"][^] {getLinea=yyline; return Error_Comentario;}
+ . {getLinea=yyline; toString=yytext(); return Error_Caracter_Invalido;}
