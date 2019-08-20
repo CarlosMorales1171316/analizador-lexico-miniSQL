@@ -1374,6 +1374,7 @@ class Lexer {
   /* user code: */
     public String toString;
     public Integer getLinea;
+    public Integer getColumna;
     ArrayList<String> IdentificadoresLista = new ArrayList<>();
     ArrayList<String> ReservadasLista = new ArrayList<>();
     ArrayList<String> ConstantesLista = new ArrayList<>();
@@ -1751,16 +1752,16 @@ class Lexer {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
-            { getLinea=yyline; toString=yytext(); return Error_Caracter_Invalido;
+            { getLinea=yyline+1; toString=yytext(); return Error_Caracter_Invalido;
             } 
             // fall through
           case 9: break;
           case 2: 
             { if(IdentificadoresLista.contains(yytext())){
-        getLinea=yyline; toString=yytext(); return Identificador;
+        getLinea=yyline+1; toString=yytext(); return Identificador;
       } else {
         IdentificadoresLista.add(yytext()); 
-        getLinea=yyline;  
+        getLinea=yyline+1;  
         toString=yytext();
         return Identificador; 
       }
@@ -1769,10 +1770,10 @@ class Lexer {
           case 10: break;
           case 3: 
             { if(ConstantesLista.contains(yytext())){
-        getLinea=yyline; toString=yytext(); return Constante;
+        getLinea=yyline+1; toString=yytext(); return Constante;
       } else {
         ConstantesLista.add(yytext()); 
-        getLinea=yyline;
+        getLinea=yyline+1;
         toString=yytext();  
         return Constante; 
       }
@@ -1781,10 +1782,10 @@ class Lexer {
           case 11: break;
           case 4: 
             { if(OperadoresLista.contains(yytext())){
-        getLinea=yyline; toString=yytext(); return Operador;
+        getLinea=yyline+1; toString=yytext(); return Operador;
       } else {
         OperadoresLista.add(yytext()); 
-        getLinea=yyline;  
+        getLinea=yyline+1;  
         toString=yytext();
         return Operador; 
       }
@@ -1798,10 +1799,10 @@ class Lexer {
           case 13: break;
           case 6: 
             { if(ConstantesLista.contains(yytext())){
-        getLinea=yyline; toString=yytext(); return Constante;
+        getLinea=yyline+1; toString=yytext(); return Constante;
       } else {
         ConstantesLista.add(yytext()); 
-        getLinea=yyline; 
+        getLinea=yyline+1; 
         toString=yytext(); 
         return Constante; 
       }
@@ -1809,16 +1810,16 @@ class Lexer {
             // fall through
           case 14: break;
           case 7: 
-            { getLinea=yyline; return Error_Comentario;
+            { getLinea=yyline+1; toString=yytext(); return Error_Comentario;
             } 
             // fall through
           case 15: break;
           case 8: 
             { if(ReservadasLista.contains(yytext())){
-        getLinea=yyline; toString=yytext(); return Reservada;
+        getLinea=yyline+1; toString=yytext(); return Reservada;
       } else {
         ReservadasLista.add(yytext()); 
-        getLinea=yyline; 
+        getLinea=yyline+1; 
         toString=yytext(); 
         return Reservada; 
       }

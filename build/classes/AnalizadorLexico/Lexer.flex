@@ -19,7 +19,7 @@ Identificador = {Letra}({LetraGuion}|{Digito})*
 /*Constantes*/
 Entero=[1-9][0-9]* | "-"[1-9][0-9]* 
 Decimal=[0-9]+ ["."][0-9]* | "-"[0-9]+ ["."][0-9]*
-Exponencial= (([0-9]+ [e|E] ["+"|"-"] [0-9]*) | ([0-9] + [e|E] [0-9]*)) | ((-[0-9]+ [e|E] ["+"|"-"] [0-9]*) | ([0-9] + [e|E] [0-9]*))
+Exponencial= (([0-9]+ ["e"|"E"] ["+"|"-"] [0-9]*) | ([0-9] + ["e"|"E"] [0-9]*)) | ((-[0-9]+ ["e"|"E"] ["+"|"-"] [0-9]*) | ([0-9] + ["e"|"E"] [0-9]*))
 
 /*Espacios en blanco*/
 /* Espacio=[ ,\t,\r,\n]+  */
@@ -39,6 +39,10 @@ Comment = {SQLSingleLineComment} | {SQLMultiLineComment}
 /*getLinea*/
 %{
     public Integer getLinea;
+%}
+/*getColumna*/
+%{
+    public Integer getColumna;
 %}
 /*Listas*/
 %{
@@ -751,10 +755,10 @@ HOLD |
 REGR_SYY |     
 ZONE | 
 while { if(ReservadasLista.contains(yytext())){
-        getLinea=yyline; toString=yytext(); return Reservada;
+        getLinea=yyline+1; toString=yytext(); return Reservada;
       } else {
         ReservadasLista.add(yytext()); 
-        getLinea=yyline; 
+        getLinea=yyline+1; 
         toString=yytext(); 
         return Reservada; 
       }
@@ -792,54 +796,54 @@ while { if(ReservadasLista.contains(yytext())){
 "#" |    
 "##" |
 while { if(OperadoresLista.contains(yytext())){
-        getLinea=yyline; toString=yytext(); return Operador;
+        getLinea=yyline+1; toString=yytext(); return Operador;
       } else {
         OperadoresLista.add(yytext()); 
-        getLinea=yyline;  
+        getLinea=yyline+1;  
         toString=yytext();
         return Operador; 
       }
 }
 
 {Identificador} { if(IdentificadoresLista.contains(yytext())){
-        getLinea=yyline; toString=yytext(); return Identificador;
+        getLinea=yyline+1; toString=yytext(); return Identificador;
       } else {
         IdentificadoresLista.add(yytext()); 
-        getLinea=yyline;  
+        getLinea=yyline+1;  
         toString=yytext();
         return Identificador; 
       }
 }
 
 {Entero} { if(ConstantesLista.contains(yytext())){
-        getLinea=yyline; toString=yytext(); return Constante;
+        getLinea=yyline+1; toString=yytext(); return Constante;
       } else {
         ConstantesLista.add(yytext()); 
-        getLinea=yyline;
+        getLinea=yyline+1;
         toString=yytext();  
         return Constante; 
       }
 }
 
 {Decimal} { if(ConstantesLista.contains(yytext())){
-        getLinea=yyline; toString=yytext(); return Constante;
+        getLinea=yyline+1; toString=yytext(); return Constante;
       } else {
         ConstantesLista.add(yytext()); 
-        getLinea=yyline; 
+        getLinea=yyline+1; 
         toString=yytext(); 
         return Constante; 
       }
 }
 {Exponencial} { if(ConstantesLista.contains(yytext())){
-        getLinea=yyline; toString=yytext(); return Constante;
+        getLinea=yyline+1; toString=yytext(); return Constante;
       } else {
         ConstantesLista.add(yytext()); 
-        getLinea=yyline;
+        getLinea=yyline+1;
         toString=yytext();  
         return Constante; 
       }
 }
 
 /*Errores*/
-["\*"][^] {getLinea=yyline; return Error_Comentario;}
- . {getLinea=yyline; toString=yytext(); return Error_Caracter_Invalido;}
+["\*"][^] {getLinea=yyline+1; toString=yytext(); return Error_Comentario;}
+ . {getLinea=yyline+1; toString=yytext(); return Error_Caracter_Invalido;}

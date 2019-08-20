@@ -11,8 +11,8 @@ package AnalizadorLexico;
  */
 public enum Tokens {
     Reservada,
-    Constante,
     Identificador,
+    Constante,
     Operador,
     Error_Caracter_Invalido,
     Error_Comentario
