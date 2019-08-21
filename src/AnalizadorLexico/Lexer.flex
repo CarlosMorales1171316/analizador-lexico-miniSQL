@@ -17,12 +17,13 @@ Digito=0|[1-9][0-9]*
 Identificador = {Letra}({LetraGuion}|{Digito})* 
 
 /*Constantes*/
+Bit=[0|1|"NULL"]
 Entero=[1-9][0-9]* | "-"[1-9][0-9]* 
 Decimal=[0-9]+ ["."][0-9]* | "-"[0-9]+ ["."][0-9]*
-Exponencial= (([0-9]+ ["e"|"E"] ["+"|"-"] [0-9]*) | ([0-9] + ["e"|"E"] [0-9]*)) | ((-[0-9]+ ["e"|"E"] ["+"|"-"] [0-9]*) | ([0-9] + ["e"|"E"] [0-9]*))
+Exponencial= (([0-9]+ ["."] [0-9]* ["e"|"E"] ["+"|"-"] [0-9]*) | ([0-9]+ ["."] [0-9]* ["e"|"E"] [0-9]*)) | ((-[0-9]+ ["."] [0-9]* ["e"|"E"] ["+"|"-"] [0-9]*) | (-[0-9]+ ["."] [0-9]* ["e"|"E"] [0-9]*))
+Cadena = "'" .* "'" 
 
 /*Espacios en blanco*/
-/* Espacio=[ ,\t,\r,\n]+  */
 LineTerminator = \r|\n|\r\n
 InputCharacter = [^\r\n]
 WhiteSpace = {LineTerminator} | [ \t\f]
@@ -31,6 +32,7 @@ WhiteSpace = {LineTerminator} | [ \t\f]
 SQLSingleLineComment = "--" {InputCharacter}*
 SQLMultiLineComment = "/*" [^*] ~"*/"
 Comment = {SQLSingleLineComment} | {SQLMultiLineComment}
+ErrorComment = "/*" {InputCharacter}* 
 
 /*toString*/
 %{
@@ -52,12 +54,24 @@ Comment = {SQLSingleLineComment} | {SQLMultiLineComment}
     ArrayList<String> ReservadasLista = new ArrayList<>();
 %}
 %{
-    ArrayList<String> ConstantesLista = new ArrayList<>();
-%}
-%{
     ArrayList<String> OperadoresLista = new ArrayList<>();
 %}
-
+/*Listas de Constantes*/
+%{
+    ArrayList<String> ConstantesBooleanasLista = new ArrayList<>();
+%}
+%{
+    ArrayList<String> ConstantesEnterasLista = new ArrayList<>();
+%}
+%{
+    ArrayList<String> ConstantesDecimalesLista = new ArrayList<>();
+%}
+%{
+    ArrayList<String> ConstantesExponencialesLista = new ArrayList<>();
+%}
+%{
+    ArrayList<String> ConstantesCadenasLista = new ArrayList<>();
+%}
 %%
 /*Reservadas*/
 ADD |      
@@ -815,35 +829,53 @@ while { if(OperadoresLista.contains(yytext())){
       }
 }
 
-{Entero} { if(ConstantesLista.contains(yytext())){
-        getLinea=yyline+1; toString=yytext(); return Constante;
+{Bit} { if(ConstantesBooleanasLista.contains(yytext())){
+        getLinea=yyline+1; toString=yytext(); return Constante_Booleana;
       } else {
-        ConstantesLista.add(yytext()); 
+        ConstantesBooleanasLista.add(yytext()); 
         getLinea=yyline+1;
         toString=yytext();  
-        return Constante; 
+        return Constante_Booleana; 
+      }
+}
+{Entero} { if(ConstantesEnterasLista.contains(yytext())){
+        getLinea=yyline+1; toString=yytext(); return Constante_Entera;
+      } else {
+        ConstantesEnterasLista.add(yytext()); 
+        getLinea=yyline+1;
+        toString=yytext();  
+        return Constante_Entera; 
       }
 }
 
-{Decimal} { if(ConstantesLista.contains(yytext())){
-        getLinea=yyline+1; toString=yytext(); return Constante;
+{Decimal} { if(ConstantesDecimalesLista.contains(yytext())){
+        getLinea=yyline+1; toString=yytext(); return Constante_Decimal;
       } else {
-        ConstantesLista.add(yytext()); 
+        ConstantesDecimalesLista.add(yytext()); 
         getLinea=yyline+1; 
         toString=yytext(); 
-        return Constante; 
+        return Constante_Decimal; 
       }
 }
-{Exponencial} { if(ConstantesLista.contains(yytext())){
-        getLinea=yyline+1; toString=yytext(); return Constante;
+{Exponencial} { if(ConstantesExponencialesLista.contains(yytext())){
+        getLinea=yyline+1; toString=yytext(); return Constante_Exponencial;
       } else {
-        ConstantesLista.add(yytext()); 
+        ConstantesExponencialesLista.add(yytext()); 
         getLinea=yyline+1;
         toString=yytext();  
-        return Constante; 
+        return Constante_Exponencial; 
+      }
+}
+{Cadena} { if(ConstantesCadenasLista.contains(yytext())){
+        getLinea=yyline+1; toString=yytext(); return Constante_Cadena;
+      } else {
+        ConstantesCadenasLista.add(yytext()); 
+        getLinea=yyline+1;
+        toString=yytext();  
+        return Constante_Cadena; 
       }
 }
 
 /*Errores*/
-["\*"][^] {getLinea=yyline+1; toString=yytext(); return Error_Comentario;}
+{ErrorComment} {getLinea=yyline+1; return Error_Comentario;}
  . {getLinea=yyline+1; toString=yytext(); return Error_Caracter_Invalido;}

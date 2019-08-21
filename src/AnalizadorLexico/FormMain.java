@@ -109,12 +109,11 @@ public class FormMain extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnAnalizar, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(77, Short.MAX_VALUE))
+                    .addComponent(btnAnalizar, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(71, Short.MAX_VALUE))
         );
 
         pack();
@@ -142,16 +141,34 @@ public class FormMain extends javax.swing.JFrame {
                         tabla.addRow(fila1);
                         break;
                     case Error_Comentario:
-                        String [] fila2 = {lexer.getLinea.toString(),lexer.toString,tokens.toString()};
+                        String [] fila2 = {lexer.getLinea.toString()," ",tokens.toString()};
                         tabla.addRow(fila2);
                         break;
-                    case Identificador: case Reservada: case Operador: 
+                    case Identificador: case Operador: 
                         String [] fila3 = {lexer.getLinea.toString(),lexer.toString,tokens.toString()};
                         tabla.addRow(fila3);
                         break;
-                    case Constante:
+                    case Reservada:
                         String [] fila4 = {lexer.getLinea.toString(),lexer.toString,tokens.toString()};
                         tabla.addRow(fila4);
+                        if (lexer.toString.equals("NULL")) {
+                            lexer.ConstantesBooleanasLista.add(lexer.toString);
+                        }
+                        break;
+                    case Constante_Entera: case Constante_Decimal: case Constante_Exponencial: case Constante_Cadena:
+                        String [] fila5 = {lexer.getLinea.toString(),lexer.toString,tokens.toString()};
+                        tabla.addRow(fila5);
+                        break;
+                    case Constante_Booleana:
+                        String [] fila6 = {lexer.getLinea.toString(),lexer.toString,tokens.toString()};
+                        tabla.addRow(fila6);
+                        if (lexer.toString.equals("1")) {
+                            lexer.ConstantesDecimalesLista.add(lexer.toString);
+                        }
+                        if (lexer.toString.equals("0")) {
+                            lexer.ConstantesDecimalesLista.add(lexer.toString);
+                        }
+                        break;    
                     default:
                         break;
                 }
