@@ -18,12 +18,18 @@ Identificador = {Letra}({LetraGuion}|{Digito})*
 
 /*Constantes*/
 Bit=[0|1|"NULL"]
-Entero=[1-9][0-9]* | "-"[1-9][0-9]* 
-Decimal=[0-9]+ ["."][0-9]* | "-"[0-9]+ ["."][0-9]*
-Exponencial= (([0-9]+ ["."] [0-9]* ["e"|"E"] ["+"|"-"] [0-9]*) | ([0-9]+ ["."] [0-9]* ["e"|"E"] [0-9]*)) | ((-[0-9]+ ["."] [0-9]* ["e"|"E"] ["+"|"-"] [0-9]*) | (-[0-9]+ ["."] [0-9]* ["e"|"E"] [0-9]*))
-Cadena = "'" .* "'" 
+Int=[1-9][0-9]* | "-"[1-9][0-9]* 
+Float=[0-9]+ ["."][0-9]* | "-"[0-9]+ ["."][0-9]*
+Exp= (([0-9]+ ["."] [0-9]* ["e"|"E"] ["+"|"-"] [0-9]*) | ([0-9]+ ["."] [0-9]* ["e"|"E"] [0-9]*)) | (("-"[0-9]+ ["."] [0-9]* ["e"|"E"] ["+"|"-"] [0-9]*) | ("-"[0-9]+ ["."] [0-9]* ["e"|"E"] [0-9]*))
+String = "'" .* "'" 
 
 /*Espacios en blanco*/
+/* 
+\r--> retorno de carro
+\n--> nueva linea
+\t--> tabulacion horizontal
+\f -->tabulacion vertical
+*/
 LineTerminator = \r|\n|\r\n
 InputCharacter = [^\r\n]
 WhiteSpace = {LineTerminator} | [ \t\f]
@@ -33,6 +39,8 @@ SQLSingleLineComment = "--" {InputCharacter}*
 SQLMultiLineComment = "/*" [^*] ~"*/"
 Comment = {SQLSingleLineComment} | {SQLMultiLineComment}
 ErrorComment = "/*" {InputCharacter}* 
+ErrorCadena ="'" + .+
+
 
 /*toString*/
 %{
@@ -44,9 +52,13 @@ ErrorComment = "/*" {InputCharacter}*
 %}
 /*getColumna*/
 %{
-    public Integer getColumna;
+    public Integer getColumnaInicial;
 %}
-/*Listas*/
+%{
+    public Integer getColumnaFinal;
+%}
+
+/*Listas sin repeticion*/
 %{
     ArrayList<String> IdentificadoresLista = new ArrayList<>();
 %}
@@ -769,10 +781,12 @@ HOLD |
 REGR_SYY |     
 ZONE | 
 while { if(ReservadasLista.contains(yytext())){
-        getLinea=yyline+1; toString=yytext(); return Reservada;
+        getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Reservada;
       } else {
         ReservadasLista.add(yytext()); 
         getLinea=yyline+1; 
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
         toString=yytext(); 
         return Reservada; 
       }
@@ -789,7 +803,7 @@ while { if(ReservadasLista.contains(yytext())){
 ">" |
 ">=" |
 "=" |
-"==" |
+"==" | 
 "!=" |
 "&&" |
 "||" |
@@ -810,72 +824,87 @@ while { if(ReservadasLista.contains(yytext())){
 "#" |    
 "##" |
 while { if(OperadoresLista.contains(yytext())){
-        getLinea=yyline+1; toString=yytext(); return Operador;
+        getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Operador;
       } else {
         OperadoresLista.add(yytext()); 
-        getLinea=yyline+1;  
+        getLinea=yyline+1; 
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1; 
         toString=yytext();
         return Operador; 
       }
 }
 
 {Identificador} { if(IdentificadoresLista.contains(yytext())){
-        getLinea=yyline+1; toString=yytext(); return Identificador;
+        getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Identificador;
       } else {
         IdentificadoresLista.add(yytext()); 
-        getLinea=yyline+1;  
+        getLinea=yyline+1; 
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1; 
         toString=yytext();
         return Identificador; 
       }
 }
 
 {Bit} { if(ConstantesBooleanasLista.contains(yytext())){
-        getLinea=yyline+1; toString=yytext(); return Constante_Booleana;
+        getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Bit;
       } else {
         ConstantesBooleanasLista.add(yytext()); 
         getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
         toString=yytext();  
-        return Constante_Booleana; 
+        return Bit; 
       }
 }
-{Entero} { if(ConstantesEnterasLista.contains(yytext())){
-        getLinea=yyline+1; toString=yytext(); return Constante_Entera;
+{Int} { if(ConstantesEnterasLista.contains(yytext())){
+        getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Int;
       } else {
         ConstantesEnterasLista.add(yytext()); 
         getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
         toString=yytext();  
-        return Constante_Entera; 
+        return Int; 
       }
 }
 
-{Decimal} { if(ConstantesDecimalesLista.contains(yytext())){
-        getLinea=yyline+1; toString=yytext(); return Constante_Decimal;
+{Float} { if(ConstantesDecimalesLista.contains(yytext())){
+        getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Float;
       } else {
         ConstantesDecimalesLista.add(yytext()); 
         getLinea=yyline+1; 
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
         toString=yytext(); 
-        return Constante_Decimal; 
+        return Float; 
       }
 }
-{Exponencial} { if(ConstantesExponencialesLista.contains(yytext())){
-        getLinea=yyline+1; toString=yytext(); return Constante_Exponencial;
+{Exp} { if(ConstantesExponencialesLista.contains(yytext())){
+        getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Exp;
       } else {
         ConstantesExponencialesLista.add(yytext()); 
         getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
         toString=yytext();  
-        return Constante_Exponencial; 
+        return Exp; 
       }
 }
-{Cadena} { if(ConstantesCadenasLista.contains(yytext())){
-        getLinea=yyline+1; toString=yytext(); return Constante_Cadena;
+{String} { if(ConstantesCadenasLista.contains(yytext())){
+         getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return String;
       } else {
         ConstantesCadenasLista.add(yytext()); 
         getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
         toString=yytext();  
-        return Constante_Cadena; 
+        return String; 
       }
 }
 
 /*Errores*/
-{ErrorComment} {getLinea=yyline+1; return Error_Comentario;}
- . {getLinea=yyline+1; toString=yytext(); return Error_Caracter_Invalido;}
+{ErrorComment} {getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Error_Comentario_Sin_Cerrar;}
+{ErrorCadena} {getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Error_Cadena_Invalida;}
+ . {getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Error_Caracter_Invalido;}

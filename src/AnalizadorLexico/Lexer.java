@@ -57,24 +57,24 @@ class Lexer {
   private static final String ZZ_ACTION_PACKED_0 =
     "\1\0\1\1\1\2\1\3\1\4\1\3\1\2\1\3"+
     "\2\5\1\1\2\6\1\5\31\2\1\5\1\1\4\5"+
-    "\1\0\1\7\4\2\1\6\1\0\1\10\1\11\2\2"+
-    "\1\12\6\2\1\12\26\2\1\12\13\2\1\12\3\2"+
-    "\1\12\12\2\2\12\3\2\1\12\33\2\2\12\22\2"+
-    "\1\12\21\2\1\13\7\2\1\12\1\2\1\11\1\0"+
-    "\1\11\3\2\1\12\16\2\1\12\17\2\1\12\30\2"+
-    "\1\12\5\2\1\12\33\2\1\12\4\2\1\12\33\2"+
-    "\1\12\15\2\1\12\4\2\1\12\11\2\1\12\22\2"+
-    "\1\12\7\2\2\12\12\2\1\13\2\2\1\11\1\0"+
-    "\7\2\1\12\11\2\1\12\11\2\1\0\23\2\1\12"+
-    "\3\2\1\12\2\2\1\12\20\2\1\12\11\2\1\12"+
-    "\10\2\1\12\5\2\1\12\4\2\1\12\5\2\1\12"+
-    "\3\2\1\12\11\2\1\12\1\2\2\12\3\2\1\12"+
-    "\20\2\1\12\32\2\1\12\1\2\1\12\7\2\1\6"+
-    "\17\2\1\0\14\2\1\12\30\2\1\12\63\2\1\12"+
-    "\13\2\1\12\2\2\1\12\4\2\1\12\10\2\1\12"+
-    "\1\0\65\2\1\12\4\2\1\12\3\2\1\0\21\2"+
-    "\1\12\5\2\2\12\25\2\1\12\22\2\1\12\3\2"+
-    "\1\12\4\2\1\12\7\2\1\12\144\2";
+    "\1\0\1\7\4\2\1\6\1\10\1\11\1\12\2\2"+
+    "\1\13\6\2\1\13\26\2\1\13\13\2\1\13\3\2"+
+    "\1\13\12\2\2\13\3\2\1\13\33\2\2\13\22\2"+
+    "\1\13\21\2\1\14\7\2\1\13\1\2\1\12\1\0"+
+    "\1\12\3\2\1\13\16\2\1\13\17\2\1\13\30\2"+
+    "\1\13\5\2\1\13\33\2\1\13\4\2\1\13\33\2"+
+    "\1\13\15\2\1\13\4\2\1\13\11\2\1\13\22\2"+
+    "\1\13\7\2\2\13\12\2\1\14\2\2\1\12\1\0"+
+    "\7\2\1\13\11\2\1\13\11\2\1\0\23\2\1\13"+
+    "\3\2\1\13\2\2\1\13\20\2\1\13\11\2\1\13"+
+    "\10\2\1\13\5\2\1\13\4\2\1\13\5\2\1\13"+
+    "\3\2\1\13\11\2\1\13\1\2\2\13\3\2\1\13"+
+    "\20\2\1\13\32\2\1\13\1\2\1\13\7\2\1\6"+
+    "\17\2\1\0\14\2\1\13\30\2\1\13\63\2\1\13"+
+    "\13\2\1\13\2\2\1\13\4\2\1\13\10\2\1\13"+
+    "\1\0\65\2\1\13\4\2\1\13\3\2\1\0\21\2"+
+    "\1\13\5\2\2\13\25\2\1\13\22\2\1\13\3\2"+
+    "\1\13\4\2\1\13\7\2\1\13\144\2";
 
   private static int [] zzUnpackAction() {
     int [] result = new int[962];
@@ -1514,9 +1514,8 @@ class Lexer {
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
     "\1\0\1\11\7\1\1\11\1\1\1\11\41\1\1\0"+
-    "\6\1\1\0\217\1\1\0\307\1\1\0\33\1\1\0"+
-    "\252\1\1\0\167\1\1\0\76\1\1\0\56\1\1\11"+
-    "\210\1";
+    "\226\1\1\0\307\1\1\0\33\1\1\0\252\1\1\0"+
+    "\167\1\1\0\76\1\1\0\56\1\1\11\210\1";
 
   private static int [] zzUnpackAttribute() {
     int [] result = new int[962];
@@ -1597,7 +1596,8 @@ class Lexer {
   /* user code: */
     public String toString;
     public Integer getLinea;
-    public Integer getColumna;
+    public Integer getColumnaInicial;
+    public Integer getColumnaFinal;
     ArrayList<String> IdentificadoresLista = new ArrayList<>();
     ArrayList<String> ReservadasLista = new ArrayList<>();
     ArrayList<String> OperadoresLista = new ArrayList<>();
@@ -1979,116 +1979,137 @@ class Lexer {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
-            { getLinea=yyline+1; toString=yytext(); return Error_Caracter_Invalido;
+            { getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Error_Caracter_Invalido;
             } 
             // fall through
-          case 12: break;
+          case 13: break;
           case 2: 
             { if(IdentificadoresLista.contains(yytext())){
-        getLinea=yyline+1; toString=yytext(); return Identificador;
+        getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Identificador;
       } else {
         IdentificadoresLista.add(yytext()); 
-        getLinea=yyline+1;  
+        getLinea=yyline+1; 
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1; 
         toString=yytext();
         return Identificador; 
       }
             } 
             // fall through
-          case 13: break;
+          case 14: break;
           case 3: 
             { if(ConstantesBooleanasLista.contains(yytext())){
-        getLinea=yyline+1; toString=yytext(); return Constante_Booleana;
+        getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Bit;
       } else {
         ConstantesBooleanasLista.add(yytext()); 
         getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
         toString=yytext();  
-        return Constante_Booleana; 
-      }
-            } 
-            // fall through
-          case 14: break;
-          case 4: 
-            { if(ConstantesEnterasLista.contains(yytext())){
-        getLinea=yyline+1; toString=yytext(); return Constante_Entera;
-      } else {
-        ConstantesEnterasLista.add(yytext()); 
-        getLinea=yyline+1;
-        toString=yytext();  
-        return Constante_Entera; 
+        return Bit; 
       }
             } 
             // fall through
           case 15: break;
+          case 4: 
+            { if(ConstantesEnterasLista.contains(yytext())){
+        getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Int;
+      } else {
+        ConstantesEnterasLista.add(yytext()); 
+        getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
+        toString=yytext();  
+        return Int; 
+      }
+            } 
+            // fall through
+          case 16: break;
           case 5: 
             { if(OperadoresLista.contains(yytext())){
-        getLinea=yyline+1; toString=yytext(); return Operador;
+        getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Operador;
       } else {
         OperadoresLista.add(yytext()); 
-        getLinea=yyline+1;  
+        getLinea=yyline+1; 
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1; 
         toString=yytext();
         return Operador; 
       }
             } 
             // fall through
-          case 16: break;
+          case 17: break;
           case 6: 
             { /*Ignore*/
             } 
             // fall through
-          case 17: break;
+          case 18: break;
           case 7: 
             { if(ConstantesDecimalesLista.contains(yytext())){
-        getLinea=yyline+1; toString=yytext(); return Constante_Decimal;
+        getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Float;
       } else {
         ConstantesDecimalesLista.add(yytext()); 
         getLinea=yyline+1; 
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
         toString=yytext(); 
-        return Constante_Decimal; 
-      }
-            } 
-            // fall through
-          case 18: break;
-          case 8: 
-            { if(ConstantesCadenasLista.contains(yytext())){
-        getLinea=yyline+1; toString=yytext(); return Constante_Cadena;
-      } else {
-        ConstantesCadenasLista.add(yytext()); 
-        getLinea=yyline+1;
-        toString=yytext();  
-        return Constante_Cadena; 
+        return Float; 
       }
             } 
             // fall through
           case 19: break;
-          case 9: 
-            { getLinea=yyline+1; return Error_Comentario;
+          case 8: 
+            { getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Error_Cadena_Invalida;
             } 
             // fall through
           case 20: break;
+          case 9: 
+            { if(ConstantesCadenasLista.contains(yytext())){
+         getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return String;
+      } else {
+        ConstantesCadenasLista.add(yytext()); 
+        getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
+        toString=yytext();  
+        return String; 
+      }
+            } 
+            // fall through
+          case 21: break;
           case 10: 
+            { getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Error_Comentario_Sin_Cerrar;
+            } 
+            // fall through
+          case 22: break;
+          case 11: 
             { if(ReservadasLista.contains(yytext())){
-        getLinea=yyline+1; toString=yytext(); return Reservada;
+        getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Reservada;
       } else {
         ReservadasLista.add(yytext()); 
         getLinea=yyline+1; 
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
         toString=yytext(); 
         return Reservada; 
       }
             } 
             // fall through
-          case 21: break;
-          case 11: 
+          case 23: break;
+          case 12: 
             { if(ConstantesExponencialesLista.contains(yytext())){
-        getLinea=yyline+1; toString=yytext(); return Constante_Exponencial;
+        getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Exp;
       } else {
         ConstantesExponencialesLista.add(yytext()); 
         getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
         toString=yytext();  
-        return Constante_Exponencial; 
+        return Exp; 
       }
             } 
             // fall through
-          case 22: break;
+          case 24: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }

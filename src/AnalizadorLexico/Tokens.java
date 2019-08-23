@@ -12,12 +12,13 @@ package AnalizadorLexico;
 public enum Tokens {
     Reservada,
     Identificador,
-    Constante_Booleana,
-    Constante_Entera,
-    Constante_Decimal,
-    Constante_Exponencial,
-    Constante_Cadena,
+    Bit,
+    Int,
+    Float,
+    Exp,
+    String,
     Operador,
     Error_Caracter_Invalido,
-    Error_Comentario
+    Error_Cadena_Invalida,
+    Error_Comentario_Sin_Cerrar
 }
