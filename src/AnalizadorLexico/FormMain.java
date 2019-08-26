@@ -6,11 +6,12 @@
 package AnalizadorLexico;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -136,11 +137,20 @@ public class FormMain extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+   
     private void btnAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarActionPerformed
         // TODO add your handling code here:
         JFileChooser chooser = new JFileChooser();
         chooser.showOpenDialog(null);
+   
+        String NombreArchivoEntrada ="";
+    
+        NombreArchivoEntrada = chooser.getSelectedFile().getName();
+        String [] split = NombreArchivoEntrada.split("\\.");
+        NombreArchivoEntrada=split[0];
+        
         DefaultTableModel tabla = (DefaultTableModel) tblScanner.getModel();
+        
         //Listas con repetición
         ArrayList<String> listaOperador = new ArrayList<>();
         ArrayList<String> listaIdentificador = new ArrayList<>();
@@ -154,161 +164,221 @@ public class FormMain extends javax.swing.JFrame {
         try {
             Reader reader = new BufferedReader (new FileReader(chooser.getSelectedFile()));
             Lexer lexer = new Lexer(reader);
+            
+            File archivoSalida = new File("C:/Users/carlo/Documents/NetBeansProjects/analizador-lexico-miniSQL/src/AnalizadorLexico/"+NombreArchivoEntrada+".out");
+            if (!archivoSalida.exists()) {
+                archivoSalida.createNewFile();
+            }
+            FileWriter fw = new FileWriter(archivoSalida);
+            BufferedWriter bw = new BufferedWriter(fw);
+            String contenido = "";
+            
             while (true) {
                 Tokens tokens = lexer.yylex();
                 
                 if (tokens == null) {
+                    bw.close();
                     return;
                 }
                 switch (tokens) {
                     case Error_Caracter_Invalido: 
                         String [] fila1 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Carácter Inválido"};                        
                         tabla.addRow(fila1);
+                        contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Carácter Inválido\n");
                         break;
                     case Error_Cadena_Invalida: 
                         String [] fila2 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Cadena Inválida"};                        
                         tabla.addRow(fila2);
+                        contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Cadena Inválida\n");
                         break;    
                     case Error_Comentario_Sin_Cerrar:
                         String [] fila3 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Comentario Sin Terminar"};                        
                         tabla.addRow(fila3);
+                        contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Comentario Sin Terminar\n");
                         break;
                     case Identificador: 
-                        String [] fila4 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};                        
-                        tabla.addRow(fila4);
-                        listaIdentificador.add(lexer.toString);
+                        if (lexer.yylength() > 31) {
+                            String identificador = "";
+                            int columnaFinal = 0;
+                            identificador = lexer.yytext().substring(0,31);
+                            columnaFinal = lexer.getColumnaInicial+30;
+                            String columnaFinalString = Integer.toString(columnaFinal);
+                            String [] fila4 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),columnaFinalString,identificador,"Indentificador De Longitud Excedida"}; 
+                            tabla.addRow(fila4);
+                            contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + columnaFinalString +" " + "Palabra analizada: " + identificador +" " + "Token: " + "Identificador De Longitud Excedida\n");
+                            listaIdentificador.add(identificador);
+                        }
+                        else {
+                            String [] fila4 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString, tokens.toString()}; 
+                            tabla.addRow(fila4);
+                            contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + tokens.toString()+"\n");
+                            listaIdentificador.add(lexer.toString);
+                        }
                         break;
                     case Operador: 
+                        // <editor-fold defaultstate="collapsed" desc="Switch Operadores">
                         switch (lexer.toString) {
                             case "+":
                                 String [] fila4_1 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Suma"};
                                 tabla.addRow(fila4_1);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Suma\n");
                                 break;
                             case "-":
                                 String [] fila4_2 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Resta"};
                                 tabla.addRow(fila4_2);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Resta\n");
                                 break;
                             case "*":
                                 String [] fila4_3 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Multiplicación"};
                                 tabla.addRow(fila4_3);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Multiplicación\n");
                                 break;
                             case "/":
                                 String [] fila4_4 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"División"};
                                 tabla.addRow(fila4_4);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "División\n");
                                 break;
                             case "%":
                                 String [] fila4_5 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Porcentaje"};
                                 tabla.addRow(fila4_5);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Porcentaje\n");
                                 break;
                             case "<":
                                 String [] fila4_6 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Menor"};
                                 tabla.addRow(fila4_6);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Menor\n");
                                 break;
                             case "<=":
                                 String [] fila4_7 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Menor o igual"};
                                 tabla.addRow(fila4_7);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Menor o igual\n");
                                 break;
                             case ">":
                                 String [] fila4_8 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Mayor"};
                                 tabla.addRow(fila4_8);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Mayor\n");
                                 break;
                             case ">=":
                                 String [] fila4_9 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Mayor o igual"};
                                 tabla.addRow(fila4_9);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Mayor o igual\n");
                                 break;
                             case "=":
                                 String [] fila4_10 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Igual"};
                                 tabla.addRow(fila4_10);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Igual\n");
                                 break;
                             case "==":
                                 String [] fila4_11 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Igualdad"};
                                 tabla.addRow(fila4_11);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Igualdad\n");
                                 break;
                             case "!=":
                                 String [] fila4_12 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Diferente"};
                                 tabla.addRow(fila4_12);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Diferente\n");
                                 break;
                             case "&&":
                                 String [] fila4_13 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"And"};
                                 tabla.addRow(fila4_13);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "And\n");
                                 break;
                             case "||":
                                 String [] fila4_14 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Or"};
                                 tabla.addRow(fila4_14);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Or\n");
                                 break;
                             case "!":
                                 String [] fila4_15 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Not"};
                                 tabla.addRow(fila4_15);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Not\n");
                                 break;
                             case ";":
                                 String [] fila4_16 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Punto y coma"};
                                 tabla.addRow(fila4_16);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Punto y coma\n");
                                 break;
                             case ",":
                                 String [] fila4_17 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Coma"};
                                 tabla.addRow(fila4_17);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Coma\n");
                                 break;
                             case ".":
                                 String [] fila4_18 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Punto"};
                                 tabla.addRow(fila4_18);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Punto\n");
                                 break;
                             case "[":
                                 String [] fila4_19 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Corchete_A"};
                                 tabla.addRow(fila4_19);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Corchete_A\n");
                                 break;
                             case "]":
                                 String [] fila4_20 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Corchete_B"};
                                 tabla.addRow(fila4_20);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Corchete_B\n");
                                 break;
                             case "[]":
                                 String [] fila4_21 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Corchetes"};
                                 tabla.addRow(fila4_21);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Corchetes\n");
                                 break;
                             case "(":
                                 String [] fila4_22 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Paréntesis_A"};
                                 tabla.addRow(fila4_22);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Paréntesis_A\n");
                                 break;
                             case ")":
                                 String [] fila4_23 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Paréntesis_B"};
                                 tabla.addRow(fila4_23);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Paréntesis_B\n");
                                 break;
                             case "()":
                                 String [] fila4_24 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Paréntesis"};
                                 tabla.addRow(fila4_24);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Paréntesis\n");
                                 break;
                             case "{":
                                 String [] fila4_25 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Llave_A"};
                                 tabla.addRow(fila4_25);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Llave_A\n");
                                 break;
                             case "}":
                                 String [] fila4_26 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Llave_B"};
                                 tabla.addRow(fila4_26);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Llave_B\n");
                                 break;
                             case "{}":
                                 String [] fila4_27 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Llaves"};
                                 tabla.addRow(fila4_27);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Llaves\n");
                                 break;
                             case "@":
                                 String [] fila4_28 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Arroba"};
                                 tabla.addRow(fila4_28);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Arroba\n");
                                 break;
                             case "#":
                                 String [] fila4_29 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Numeral"};
                                 tabla.addRow(fila4_29);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Numeral\n");
                                 break;
                             case "##":
                                 String [] fila4_30 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Doble Numeral"};
                                 tabla.addRow(fila4_30);
+                                contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + "Doble Numeral\n");
                                 break;
                         default:
                                 break;
                         }
+                           // </editor-fold>
                         listaOperador.add(lexer.toString);
                         break;
                     case Reservada:
                         String [] fila5 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};                        
                         tabla.addRow(fila5);
                         listaReservada.add(lexer.toString);
+                        contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + tokens.toString()+"\n");
                         if (lexer.toString.equals("NULL") && (!lexer.ConstantesBooleanasLista.contains(lexer.toString))) {
                             lexer.ConstantesBooleanasLista.add(lexer.toString);
                         }
@@ -317,26 +387,31 @@ public class FormMain extends javax.swing.JFrame {
                         String [] fila6 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};                        
                         tabla.addRow(fila6);
                         listaInt.add(lexer.toString);
+                        contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + tokens.toString()+"\n");
                         break;
                     case Float: 
                         String [] fila7 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};                        
                         tabla.addRow(fila7);
                         listaFloat.add(lexer.toString);
+                        contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + tokens.toString()+"\n");
                         break;
                     case Exp: 
                         String [] fila8 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};                        
                         tabla.addRow(fila8);
                         listaExp.add(lexer.toString);
+                        contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + tokens.toString()+"\n");
                         break;
                     case String:
                         String [] fila9 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
                         tabla.addRow(fila9);
                         listaString.add(lexer.toString);
+                        contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + tokens.toString()+"\n");
                         break;
                     case Bit:
                         String [] fila10 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};                        
                         tabla.addRow(fila10);
                         listaBit.add(lexer.toString);
+                        contenido += ("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + tokens.toString()+"\n");
                         if (lexer.toString.equals("1") && (!lexer.ConstantesEnterasLista.contains(lexer.toString))) {
                             lexer.ConstantesEnterasLista.add(lexer.toString);
                         }
@@ -346,27 +421,59 @@ public class FormMain extends javax.swing.JFrame {
                         break;    
                     default:
                         break;
-                }
+                        
+                }    
+                bw.write(contenido);
             }
+            
+            
         } catch (FileNotFoundException ex) {
             Logger.getLogger(FormMain.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(FormMain.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } 
     }//GEN-LAST:event_btnAnalizarActionPerformed
 
-    String ruta = "C:/Users/carlo/Documents/NetBeansProjects/analizador-lexico-miniSQL/src/AnalizadorLexico/Lexer.flex";
+    
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        String ruta = "C:/Users/carlo/Documents/NetBeansProjects/analizador-lexico-miniSQL/src/AnalizadorLexico/Lexer.flex";
+        generarLexema(ruta);
+        System.exit(0);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     public static void generarLexema(String ruta){
         File file = new File (ruta);
         jflex.Main.generate(file);
     }
     
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        generarLexema(ruta);
-        System.exit(0);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    // <editor-fold defaultstate="collapsed" desc="writeTXT">  
+    /*
+    public void writeTXT(DefaultTableModel table) throws IOException, ClassNotFoundException, SQLException {
+  Writer writer = null;
+  try{
+    writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("C:/Users/carlo/Documents/NetBeansProjects/analizador-lexico-miniSQL/src/AnalizadorLexico/PRUEBA.out")));
+    StringBuffer bufferHeader = new StringBuffer();
+    for(int i = 0; i<table.getColumnCount();i++){
+      bufferHeader.append(table.getColumnName(i));
+      if(i!=table.getColumnCount()) bufferHeader.append(" ");
+    }
+    writer.write(bufferHeader.toString()+"\r\n");
 
+    for(int j = 0; j<table.getRowCount(); j++){
+      StringBuffer buffer = new StringBuffer();
+      for (int k = 0; k<table.getColumnCount(); k++){
+        buffer.append(table.getValueAt(j,k));
+        if(k!=table.getColumnCount()) buffer.append(" ");
+      }
+      writer.write(buffer.toString()+"\r\n");
+    }
+  }finally{
+    writer.close();
+  }
+}
+    */
+    // </editor-fold>
     
     /**
      * @param args the command line arguments

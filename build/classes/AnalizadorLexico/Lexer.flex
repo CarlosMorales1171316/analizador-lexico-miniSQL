@@ -21,7 +21,7 @@ Bit=[0|1|"NULL"]
 Int=[1-9][0-9]* | "-"[1-9][0-9]* 
 Float=[0-9]+ ["."][0-9]* | "-"[0-9]+ ["."][0-9]*
 Exp= (([0-9]+ ["."] [0-9]* ["e"|"E"] ["+"|"-"] [0-9]*) | ([0-9]+ ["."] [0-9]* ["e"|"E"] [0-9]*)) | (("-"[0-9]+ ["."] [0-9]* ["e"|"E"] ["+"|"-"] [0-9]*) | ("-"[0-9]+ ["."] [0-9]* ["e"|"E"] [0-9]*))
-String = "'" .* "'" 
+String = ("'"([^'\r\n])*"'")
 
 /*Espacios en blanco*/
 /* 
@@ -36,54 +36,34 @@ WhiteSpace = {LineTerminator} | [ \t\f]
 
 /*Comentarios*/
 SQLSingleLineComment = "--" {InputCharacter}*
-SQLMultiLineComment = "/*" [^*] ~"*/"
+SQLMultiLineComment = ("/*" [^*] ~"*/") 
 Comment = {SQLSingleLineComment} | {SQLMultiLineComment}
-ErrorComment = "/*" {InputCharacter}* 
-ErrorCadena ="'" + .+
+ErrorComment = ("/*"[^\r\n.*]*)  
+ErrorCadena = ("'"([^'\r\n]*))
 
-
-/*toString*/
+/*Variables*/
 %{
     public String toString;
-%}
-/*getLinea*/
-%{
     public Integer getLinea;
-%}
-/*getColumna*/
-%{
     public Integer getColumnaInicial;
-%}
-%{
     public Integer getColumnaFinal;
 %}
 
 /*Listas sin repeticion*/
 %{
     ArrayList<String> IdentificadoresLista = new ArrayList<>();
-%}
-%{
     ArrayList<String> ReservadasLista = new ArrayList<>();
-%}
-%{
     ArrayList<String> OperadoresLista = new ArrayList<>();
 %}
 /*Listas de Constantes*/
 %{
     ArrayList<String> ConstantesBooleanasLista = new ArrayList<>();
-%}
-%{
     ArrayList<String> ConstantesEnterasLista = new ArrayList<>();
-%}
-%{
     ArrayList<String> ConstantesDecimalesLista = new ArrayList<>();
-%}
-%{
     ArrayList<String> ConstantesExponencialesLista = new ArrayList<>();
-%}
-%{
     ArrayList<String> ConstantesCadenasLista = new ArrayList<>();
 %}
+
 %%
 /*Reservadas*/
 ADD |      
@@ -105,13 +85,11 @@ AS |
 FOREIGN |     
 RECONFIGURE |     
 ASC |     
-FREETEXT |     
-REFERENCES |     
+FREETEXT |      
 AUTHORIZATION |     
 FREETEXTTABLE |     
 REPLICATION |     
 BACKUP |     
-FROM |     
 RESTORE |     
 BEGIN |     
 FULL |     
@@ -124,20 +102,15 @@ GOTO |
 REVERT |     
 BROWSE |     
 GRANT |     
-REVOKE |     
 BULK |     
 GROUP |     
-RIGHT |     
-BY |     
-HAVING |     
-ROLLBACK |     
+RIGHT |        
 CASCADE |     
 HOLDLOCK |     
 ROWCOUNT |     
 CASE |     
 IDENTITY |     
-ROWGUIDCOL |     
-CHECK |     
+ROWGUIDCOL |      
 IDENTITY_INSERT |     
 RULE |     
 CHECKPOINT |     
@@ -150,10 +123,8 @@ CLUSTERED |
 IN |     
 SECURITYAUDIT |     
 COALESCE |     
-INDEX |     
-SELECT |     
-COLLATE |     
-INNER |     
+INDEX |       
+COLLATE |         
 SEMANTICKEYPHRASETABLE |     
 COLUMN |     
 INSERT |     
@@ -161,55 +132,40 @@ SEMANTICSIMILARITYDETAILSTABLE |
 COMMIT |     
 INTERSECT |     
 SEMANTICSIMILARITYTABLE |     
-COMPUTE |     
-INTO |     
+COMPUTE |      
 SESSION_USER |     
 CONSTRAINT |     
 IS |     
 SET |     
-CONTAINS |     
-JOIN |     
+CONTAINS |      
 SETUSER |     
 CONTAINSTABLE |     
 KEY |     
 SHUTDOWN |     
-CONTINUE |     
-KILL |     
-SOME |     
-CONVERT |     
-LEFT |     
-STATISTICS |     
-CREATE |     
+KILL |        
+CONVERT |      
+STATISTICS |      
 LIKE |     
 SYSTEM_USER |     
 CROSS |     
 LINENO |     
 TABLE |     
-CURRENT |     
 LOAD |     
-TABLESAMPLE |     
-CURRENT_DATE |     
+TABLESAMPLE |       
 MERGE |     
-TEXTSIZE |     
-CURRENT_TIME |     
-NATIONAL |     
-THEN |     
-CURRENT_TIMESTAMP |     
+TEXTSIZE |                  
 NOCHECK |     
 TO |     
-CURRENT_USER |     
 NONCLUSTERED  |    
 TOP |     
 CURSOR |     
 NOT |     
 TRAN |     
-DATABASE |     
-NULL |     
+DATABASE |        
 TRANSACTION |     
 DBCC |     
 NULLIF |     
-TRIGGER |     
-DEALLOCATE |     
+TRIGGER |          
 OF |     
 TRUNCATE |     
 DECLARE |     
@@ -218,9 +174,7 @@ TRY_CONVERT |
 DEFAULT |     
 OFFSETS |     
 TSEQUAL |     
-DELETE |     
-ON |     
-UNION |     
+DELETE |        
 DENY |     
 OPEN |     
 UNIQUE |     
@@ -228,26 +182,19 @@ DESC |
 OPENDATASOURCE |     
 UNPIVOT |     
 DISK |     
-OPENQUERY |     
-UPDATE |     
+OPENQUERY |         
 DISTINCT |     
 OPENROWSET |     
 UPDATETEXT |     
 DISTRIBUTED |     
 OPENXML |     
-USE |     
-DOUBLE |     
-OPTION |     
+USE |       
 USER |     
 DROP |     
 OR |     
-VALUES |     
 DUMP |     
 ORDER |     
-VARYING |     
-ELSE |     
-OUTER |     
-VIEW |     
+VARYING |               
 END |     
 OVER |     
 WAITFOR |     
@@ -263,147 +210,89 @@ WHILE |
 EXEC |      
 PRECISION |      
 WITH |      
-EXECUTE |     
-PRIMARY |      
-WITHIN GROUP |      
-EXISTS |     
+EXECUTE |         
+WITHIN GROUP |           
 PRINT |     
 WRITETEXT |      
 EXIT |     
 PROC |     
-LABEL |     
-ABSOLUTE |     
-EXEC |     
+LABEL |           
 OVERLAPS |     
 ACTION |     
-EXECUTE |     
 PAD |     
 ADA |     
 EXISTS |     
-PARTIAL |     
-ADD |     
-EXTERNAL |     
+PARTIAL |       
 PASCAL |     
-ALL |     
 EXTRACT |     
 POSITION |     
-ALLOCATE |     
-FALSE |     
-PRECISION |     
-ALTER |     
-FETCH |     
-PREPARE |     
-AND |     
+FALSE |         
+PREPARE |       
 FIRST |     
-PRESERVE |     
-ANY |     
+PRESERVE |         
 FLOAT |     
 PRIMARY |     
 ARE |     
-FOR |     
-PRIOR |     
-AS |     
-FOREIGN |     
+PRIOR |       
 PRIVILEGES |     
-ASC |     
-FORTRAN |     
-PROCEDURE |     
-ASSERTION |     
-FOUND |     
-PUBLIC |     
+FORTRAN |              
+FOUND |         
 AT |     
-FROM |     
-READ |     
-AUTHORIZATION |     
-FULL |     
+FROM |         
 REAL |     
 AVG |     
 GET |     
 REFERENCES |     
-BEGIN |     
 GLOBAL |     
-RELATIVE |     
-BETWEEN |     
-GO |     
-RESTRICT |     
-BIT |     
-GOTO |     
+RELATIVE |        
+GO |                 
 REVOKE |     
-BIT_LENGTH |     
-GRANT |     
-RIGHT |     
-BOTH |     
-GROUP |     
+BIT_LENGTH |             
+BOTH |       
 ROLLBACK |     
 BY |     
 HAVING |     
-ROWS |     
-CASCADE |     
+ROWS |         
 HOUR |     
-SCHEMA |     
-CASCADED |     
-IDENTITY |     
-SCROLL |     
-CASE |     
-IMMEDIATE |     
-SECOND |     
-CAST |     
-IN |     
+CASCADED |       
+SCROLL |        
+SECOND |           
 SECTION |     
 CATALOG |     
 INCLUDE |     
 SELECT |     
-CHAR |     
-INDEX |     
+CHAR |         
 SESSION |     
 CHAR_LENGTH |     
-INDICATOR |     
-SESSION_USER |     
+INDICATOR |       
 CHARACTER |     
-INITIALLY |     
-SET |     
+INITIALLY |        
 CHARACTER_LENGTH |     
 INNER |     
 SIZE |     
 CHECK |     
 INPUT |     
-SMALLINT |     
-CLOSE |     
+SMALLINT |       
 INSENSITIVE |     
-SOME |     
-COALESCE |     
-INSERT |     
-SPACE |     
-COLLATE |     
-INT |     
-SQL |     
+SOME |               
+SPACE |        
+INT |       
 COLLATION |     
 INTEGER |     
-SQLCA |     
-COLUMN |     
-INTERSECT |     
-SQLCODE |     
-COMMIT |     
+SQLCA |            
+SQLCODE |        
 INTERVAL |     
 SQLERROR |     
 CONNECT |     
-INTO |     
-SQLSTATE |     
-CONNECTION |     
-IS |     
-SQLWARNING |     
-CONSTRAINT |     
+INTO |         
+CONNECTION |         
 ISOLATION |     
 SUBSTRING |     
 CONSTRAINTS |     
 JOIN |     
 SUM |     
-CONTINUE |     
-KEY |     
-SYSTEM_USER |     
-CONVERT |     
-LANGUAGE |     
-TABLE |     
+CONTINUE |            
+LANGUAGE |      
 CORRESPONDING |     
 LAST |     
 TEMPORARY |     
@@ -412,26 +301,21 @@ LEADING |
 THEN |     
 CREATE |     
 LEFT |     
-TIME |     
-CROSS |     
+TIME |        
 LEVEL |     
 TIMESTAMP |     
-CURRENT |     
-LIKE |     
+CURRENT |      
 TIMEZONE_HOUR |     
 CURRENT_DATE |     
 LOCAL |     
 TIMEZONE_MINUTE |     
 CURRENT_TIME |     
-LOWER |     
-TO |     
+LOWER |         
 CURRENT_TIMESTAMP |     
 MATCH |     
 TRAILING |     
 CURRENT_USER |     
-MAX |     
-TRANSACTION |     
-CURSOR |     
+MAX |      
 MIN |     
 TRANSLATE |     
 DATE |     
@@ -447,71 +331,44 @@ DEC |
 NAMES |     
 UNION |     
 DECIMAL |     
-NATIONAL |     
-UNIQUE |     
-DECLARE |     
+NATIONAL |        
 NATURAL |     
-UNKNOWN |     
-DEFAULT |     
+UNKNOWN |          
 NCHAR |     
 UPDATE |     
 DEFERRABLE |     
 NEXT |     
 UPPER |     
-DEFERRED |     
-NO |     
-USAGE |     
-DELETE |     
-NONE |     
-USER |     
-DESC |     
-NOT |     
+DEFERRED |         
+USAGE |                     
 USING |     
 DESCRIBE |     
 NULL |     
 VALUE |     
 DESCRIPTOR |     
-NULLIF |     
-VALUES |     
-DIAGNOSTICS |     
+VALUES |          
 NUMERIC |     
 VARCHAR |     
 DISCONNECT |     
-OCTET_LENGTH |     
-VARYING |     
-DISTINCT |     
-OF |     
+OCTET_LENGTH |            
 VIEW |     
 DOMAIN |     
-ON |     
-WHEN |     
+ON |        
 DOUBLE |     
 ONLY |     
-WHENEVER |     
-DROP |     
-OPEN |     
-WHERE |     
+WHENEVER |             
 ELSE |     
-OPTION |     
-WITH |     
-END |     
-OR |     
+OPTION |                
 WORK |     
 END-EXEC |     
-ORDER |     
-WRITE |     
-ESCAPE |     
+WRITE |        
 OUTER |     
-YEAR |     
-EXCEPT |     
+YEAR |       
 OUTPUT |     
 ZONE |     
 EXCEPTION |     
 ABSOLUTE |     
-HOST |     
-RELATIVE |     
-ACTION |     
-HOUR |     
+HOST |               
 RELEASE |     
 ADMIN |     
 IGNORE |     
@@ -520,185 +377,118 @@ AFTER |
 IMMEDIATE |     
 RETURNS |     
 AGGREGATE |     
-INDICATOR |     
 ROLE |     
 ALIAS |     
 INITIALIZE |     
 ROLLUP |     
-ALLOCATE |     
-INITIALLY |     
-ROUTINE |     
-ARE |     
+ALLOCATE |          
+ROUTINE |        
 INOUT |     
 ROW |     
-ARRAY |     
-INPUT |     
-ROWS |     
-ASENSITIVE |     
-INT |     
+ARRAY |            
+ASENSITIVE |       
 SAVEPOINT |     
-ASSERTION |     
-INTEGER |     
-SCROLL |     
+ASSERTION |              
 ASYMMETRIC |     
 INTERSECTION |     
-SCOPE |     
-AT |     
-INTERVAL |     
+SCOPE |              
 SEARCH |     
-ATOMIC |     
-ISOLATION |     
-SECOND |     
+ATOMIC |             
 BEFORE |     
-ITERATE |     
-SECTION |     
-BINARY |     
-LANGUAGE |     
+ITERATE |          
+BINARY |         
 SENSITIVE |     
 BIT |     
 LARGE |     
 SEQUENCE |     
-BLOB |     
-LAST |     
-SESSION |     
+BLOB |           
 BOOLEAN |     
 LATERAL |     
-SETS |     
-BOTH |     
-LEADING |     
+SETS |         
 SIMILAR |     
 BREADTH |     
 LESS |     
-SIZE |     
-CALL |     
-LEVEL |     
-SMALLINT |     
+CALL |           
 CALLED |     
-LIKE_REGEX |     
-SPACE |     
+LIKE_REGEX |          
 CARDINALITY |     
 LIMIT |     
-SPECIFIC |     
-CASCADED |     
+SPECIFIC |         
 LN |     
 SPECIFICTYPE |     
-CAST |     
-LOCAL |     
-SQL |     
-CATALOG |     
+CAST |         
+SQL |       
 LOCALTIME |     
-SQLEXCEPTION |     
-CHAR |     
+SQLEXCEPTION |        
 LOCALTIMESTAMP |     
 SQLSTATE |     
-CHARACTER |     
 LOCATOR |     
 SQLWARNING |     
 CLASS |     
 MAP |     
 START |     
-CLOB |     
-MATCH |     
-STATE |     
-COLLATION |     
+CLOB |         
+STATE |        
 MEMBER |     
 STATEMENT |     
 COLLECT |     
 METHOD |     
 STATIC |     
-COMPLETION |     
-MINUTE |     
+COMPLETION |      
 STDDEV_POP |     
 CONDITION |     
 MOD |     
-STDDEV_SAMP |      
-CONNECT |     
+STDDEV_SAMP |           
 MODIFIES |     
-STRUCTURE |     
-CONNECTION |     
+STRUCTURE |       
 MODIFY |     
-SUBMULTISET |     
-CONSTRAINTS |     
-MODULE |     
+SUBMULTISET |           
 SUBSTRING_REGEX |     
-CONSTRUCTOR |     
-MONTH |     
+CONSTRUCTOR |        
 SYMMETRIC |     
 CORR |     
 MULTISET |     
-SYSTEM |     
-CORRESPONDING |     
-NAMES |     
-TEMPORARY |     
-COVAR_POP |     
-NATURAL |     
+SYSTEM |                 
+COVAR_POP |      
 TERMINATE |     
-COVAR_SAMP |     
-NCHAR |     
+COVAR_SAMP |         
 THAN |     
 CUBE |     
-NCLOB |     
-TIME |     
+NCLOB |          
 CUME_DIST |     
-NEW |     
-TIMESTAMP |     
-CURRENT_CATALOG |     
-NEXT |     
-TIMEZONE_HOUR |     
+NEW |         
+CURRENT_CATALOG |             
 CURRENT_DEFAULT_TRANSFORM_GROUP |     
-NO |     
-TIMEZONE_MINUTE |     
+NO |          
 CURRENT_PATH |     
-NONE |     
-TRAILING |     
+NONE |          
 CURRENT_ROLE |     
 NORMALIZE |     
 TRANSLATE_REGEX |     
-CURRENT_SCHEMA |     
-NUMERIC |     
-TRANSLATION |     
+CURRENT_SCHEMA |            
 CURRENT_TRANSFORM_GROUP_FOR_TYPE |     
 OBJECT |     
 TREAT |     
 CYCLE |     
-OCCURRENCES_REGEX |     
-TRUE |     
+OCCURRENCES_REGEX |        
 DATA |     
 OLD |     
-UESCAPE |     
-DATE |     
-ONLY |     
-UNDER |     
-DAY |     
-OPERATION |     
-UNKNOWN |     
-DEC |     
+UESCAPE |         
+UNDER |         
+OPERATION |       
 ORDINALITY |     
-UNNEST |     
-DECIMAL |     
-OUT |     
-USAGE |     
-DEFERRABLE |     
-OVERLAY |     
-USING |     
-DEFERRED |     
-OUTPUT |     
-VALUE |     
-DEPTH |     
-PAD |     
+UNNEST |         
+OUT |         
+OVERLAY |                 
+DEPTH |       
 VAR_POP |     
 DEREF |     
 PARAMETER |     
-VAR_SAMP |     
-DESCRIBE |     
-PARAMETERS |     
-VARCHAR |     
-DESCRIPTOR |     
-PARTIAL |     
+VAR_SAMP |         
+PARAMETERS |              
 VARIABLE |     
 DESTROY |     
-PARTITION |     
-WHENEVER |     
+PARTITION |          
 DESTRUCTOR |     
 PATH |     
 WIDTH_BUCKET |     
@@ -710,13 +500,8 @@ PREFIX |
 WINDOW |     
 DIAGNOSTICS |     
 PREORDER |     
-WITHIN |     
-DISCONNECT |     
-PREPARE |     
-WORK |     
-DOMAIN |     
-PERCENT_RANK |     
-WRITE |     
+WITHIN |                
+PERCENT_RANK |      
 DYNAMIC |     
 PERCENTILE_CONT |     
 XMLAGG |     
@@ -725,32 +510,22 @@ PERCENTILE_DISC |
 XMLATTRIBUTES |     
 ELEMENT |     
 POSITION_REGEX |     
-XMLBINARY |     
-END-EXEC |     
-PRESERVE |     
+XMLBINARY |              
 XMLCAST |     
-EQUALS |     
-PRIOR |     
+EQUALS |          
 XMLCOMMENT |     
-EVERY |     
-PRIVILEGES |     
-XMLCONCAT |     
-EXCEPTION |     
+EVERY |       
+XMLCONCAT |       
 RANGE |     
-XMLDOCUMENT |     
-FALSE |     
+XMLDOCUMENT |         
 READS |     
 XMLELEMENT |     
-FILTER |     
-REAL |     
-XMLEXISTS |     
-FIRST |     
+FILTER |          
+XMLEXISTS |       
 RECURSIVE |     
-XMLFOREST |     
-FLOAT |     
+XMLFOREST |        
 REF |     
-XMLITERATE |     
-FOUND |     
+XMLITERATE |          
 REFERENCING |     
 XMLNAMESPACES |     
 FREE |    
@@ -764,22 +539,17 @@ REGR_COUNT |
 XMLQUERY |     
 GENERAL |     
 REGR_INTERCEPT |     
-XMLSERIALIZE |     
-GET |     
+XMLSERIALIZE |          
 REGR_R2 |     
 XMLTABLE |     
-GLOBAL |     
 REGR_SLOPE |     
-XMLTEXT |     
-GO |     
+XMLTEXT |          
 REGR_SXX |     
 XMLVALIDATE |     
 GROUPING |     
-REGR_SXY |     
-YEAR |     
+REGR_SXY |         
 HOLD |     
 REGR_SYY |     
-ZONE | 
 while { if(ReservadasLista.contains(yytext())){
         getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Reservada;
       } else {
