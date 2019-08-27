@@ -397,7 +397,7 @@ public class FormMain extends javax.swing.JFrame {
                         listaFloat.add(lexer.toString);
                         contenidoLista.add("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + tokens.toString());
                         break;
-                    case Exp: 
+                    case Exponencial: 
                         String [] fila8 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};                        
                         tabla.addRow(fila8);
                         listaExp.add(lexer.toString);

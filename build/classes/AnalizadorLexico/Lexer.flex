@@ -652,14 +652,14 @@ while { if(OperadoresLista.contains(yytext())){
       }
 }
 {Exp} { if(ConstantesExponencialesLista.contains(yytext())){
-        getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Exp;
+        getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Exponencial;
       } else {
         ConstantesExponencialesLista.add(yytext()); 
         getLinea=yyline+1;
         getColumnaInicial=yycolumn+1;
         getColumnaFinal=(yycolumn+1)+yytext().length()-1;
         toString=yytext();  
-        return Exp; 
+        return Exponencial; 
       }
 }
 {String} { if(ConstantesCadenasLista.contains(yytext())){

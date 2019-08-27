@@ -15,7 +15,7 @@ public enum Tokens {
     Bit,
     Int,
     Float,
-    Exp,
+    Exponencial,
     String,
     Operador,
     Error_Caracter_Invalido,
