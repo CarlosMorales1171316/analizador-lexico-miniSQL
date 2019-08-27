@@ -142,6 +142,10 @@ public class FormMain extends javax.swing.JFrame {
    
     private void btnAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarActionPerformed
         // TODO add your handling code here:
+        
+        final String path = System.getProperty("user.dir");
+        final String path2 = "/src/AnalizadorLexico/";
+        
         JFileChooser chooser = new JFileChooser();
         chooser.showOpenDialog(null);
    
@@ -166,14 +170,9 @@ public class FormMain extends javax.swing.JFrame {
         try {
             Reader reader = new BufferedReader (new FileReader(chooser.getSelectedFile()));
             Lexer lexer = new Lexer(reader);
-            
-            File archivoSalida = new File("C:/Users/carlo/Documents/NetBeansProjects/analizador-lexico-miniSQL/src/AnalizadorLexico/"+NombreArchivoEntrada+".out");
-            if (!archivoSalida.exists()) {
-                archivoSalida.createNewFile();
-            }
-            
+           
             ArrayList<String>contenidoLista = new ArrayList<>();
-            Path file = Paths.get("C:/Users/carlo/Documents/NetBeansProjects/analizador-lexico-miniSQL/src/AnalizadorLexico/"+NombreArchivoEntrada+".out");
+            Path file = Paths.get(path+path2+NombreArchivoEntrada+".out");
             
             while (true) {
                 Tokens tokens = lexer.yylex();
@@ -439,7 +438,10 @@ public class FormMain extends javax.swing.JFrame {
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        String ruta = "C:/Users/carlo/Documents/NetBeansProjects/analizador-lexico-miniSQL/src/AnalizadorLexico/Lexer.flex";
+        final String path = System.getProperty("user.dir");
+        final String path2 = "/src/AnalizadorLexico/";
+
+        String ruta = path+path2+"Lexer.flex";
         generarLexema(ruta);
         System.exit(0);
     }//GEN-LAST:event_jButton1ActionPerformed
