@@ -1,6 +1,0 @@
-Linea: 3 Columna: 1 a 5 Palabra analizada: FETCH Token: Reservada
-Linea: 16 Columna: 1 a 32 Palabra analizada: /*ESTE es un error de comentario Token: Comentario Sin Terminar
-Linea: 18 Columna: 1 a 2 Palabra analizada: 12 Token: Int
-Linea: 18 Columna: 4 a 6 Palabra analizada: ALL Token: Reservada
-Linea: 18 Columna: 8 a 12 Palabra analizada: FETCH Token: Reservada
-Linea: 18 Columna: 14 a 17 Palabra analizada: null Token: Identificador
