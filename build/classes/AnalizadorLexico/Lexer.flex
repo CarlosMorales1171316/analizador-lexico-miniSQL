@@ -18,9 +18,9 @@ Identificador = {Letra}({LetraGuion}|{Digito})*
 
 /*Constantes*/
 Bit=[0|1|"NULL"]
-Int=[1-9][0-9]* | "-"[1-9][0-9]* 
+Int=[0-9][0-9]* | "-"[0-9][0-9]* 
 Float=[0-9]+ ["."][0-9]* | "-"[0-9]+ ["."][0-9]*
-Exp= (([0-9]+ ["."] [0-9]* ["e"|"E"] ["+"|"-"] [0-9]*) | ([0-9]+ ["."] [0-9]* ["e"|"E"] [0-9]*)) | (("-"[0-9]+ ["."] [0-9]* ["e"|"E"] ["+"|"-"] [0-9]*) | ("-"[0-9]+ ["."] [0-9]* ["e"|"E"] [0-9]*))
+FloatExp= (([0-9]+ ["."] [0-9]* ["e"|"E"] ["+"|"-"] [0-9]*) | ([0-9]+ ["."] [0-9]* ["e"|"E"] [0-9]*)) | (("-"[0-9]+ ["."] [0-9]* ["e"|"E"] ["+"|"-"] [0-9]*) | ("-"[0-9]+ ["."] [0-9]* ["e"|"E"] [0-9]*))
 String = ("'"([^'\r\n])*"'")
 
 /*Espacios en blanco*/
@@ -36,7 +36,7 @@ WhiteSpace = {LineTerminator} | [ \t\f]
 
 /*Comentarios*/
 SQLSingleLineComment = "--" {InputCharacter}*
-SQLMultiLineComment = ("/*" [^*] ~"*/") 
+SQLMultiLineComment = ("/*" ~"*/") 
 Comment = {SQLSingleLineComment} | {SQLMultiLineComment}
 ErrorComment = ("/*"[^\r\n.*]*)  
 ErrorCadena = ("'"([^'\r\n]*))
@@ -651,15 +651,15 @@ while { if(OperadoresLista.contains(yytext())){
         return Float; 
       }
 }
-{Exp} { if(ConstantesExponencialesLista.contains(yytext())){
-        getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Exponencial;
+{FloatExp} { if(ConstantesExponencialesLista.contains(yytext())){
+        getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Float;
       } else {
         ConstantesExponencialesLista.add(yytext()); 
         getLinea=yyline+1;
         getColumnaInicial=yycolumn+1;
         getColumnaFinal=(yycolumn+1)+yytext().length()-1;
         toString=yytext();  
-        return Exponencial; 
+        return Float; 
       }
 }
 {String} { if(ConstantesCadenasLista.contains(yytext())){

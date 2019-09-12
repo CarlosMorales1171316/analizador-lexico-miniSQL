@@ -397,21 +397,15 @@ public class FormMain extends javax.swing.JFrame {
                         listaFloat.add(lexer.toString);
                         contenidoLista.add("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + tokens.toString());
                         break;
-                    case Exponencial: 
-                        String [] fila8 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};                        
-                        tabla.addRow(fila8);
-                        listaExp.add(lexer.toString);
-                        contenidoLista.add("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + tokens.toString());
-                        break;
                     case String:
-                        String [] fila9 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
-                        tabla.addRow(fila9);
+                        String [] fila8 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
+                        tabla.addRow(fila8);
                         listaString.add(lexer.toString);
                         contenidoLista.add("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + tokens.toString());
                         break;
                     case Bit:
-                        String [] fila10 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};                        
-                        tabla.addRow(fila10);
+                        String [] fila9 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};                        
+                        tabla.addRow(fila9);
                         listaBit.add(lexer.toString);
                         contenidoLista.add("Linea: " + lexer.getLinea.toString() +" " + "Columna: " +lexer.getColumnaInicial.toString() +" a " + lexer.getColumnaFinal.toString() +" " + "Palabra analizada: " + lexer.toString +" " + "Token: " + tokens.toString());
                         if (lexer.toString.equals("1") && (!lexer.ConstantesEnterasLista.contains(lexer.toString))) {
