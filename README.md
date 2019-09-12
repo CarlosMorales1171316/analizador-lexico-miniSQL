@@ -19,6 +19,11 @@ Luego de seleccionar el archivo de entrada, se mostrará los resultados del anal
 2. Archivo de salida con extensión ".out"
 ![img](https://i.imgur.com/o0A2WpS.png)
 
+Manejo de errores: 
+- Error por carácter inválido: Estos errores solo se mostrarán cuando el scanner lea un carácter que no sea parte de los diccionarios o expresiones regulares definidos.
+- Error por comentario sin terminar: Estos errores solo se indicarán cuando se encuentre un comentario multilinea sin cerrar, es decir, sin su simbolo de cierre "*/".
+- Error por cadena de carácteres no válidas: Estos errores se mostrarán solamente cuando el scanner detecte que una constante de tipo cadena no tenga su apostrofe de cierre y que se mantenga en la misma línea. 
+- Error por longitud excedida en identificador: Este error se dará cuando la palabra analizada de un token de tipo identificador sea mayor a 31 carácteres, se agarrará los primeros 31 carácteres y se ignorará el resto.
 
-En el repositorio deberá incluir un archivo README.txt donde explique todo el funcionamiento y porque cree que su programa funciona correctamente y es robusto, así también detallando cómo se manejan los errores. 
+Creo que mi programa funciona correctamente y es robusto ya que se realizó con tiempo y paciencia. Además, se realizaron demasiadas pruebas para cada tipo de Token, para cada Expresión Regular se hicieron todo tipo de pruebas posibles para todos los n casos que pudieran venir de entrada.
  
