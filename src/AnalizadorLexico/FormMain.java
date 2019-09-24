@@ -214,6 +214,10 @@ public class FormMain extends javax.swing.JFrame {
                     String [] dato3 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
                     tablaSintactico.addRow(dato3);
                     break;
+                    case Truncate:
+                    String [] dato4 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
+                    tablaSintactico.addRow(dato4);
+                    break;
                     
                     
                     case Error_Caracter_Invalido:

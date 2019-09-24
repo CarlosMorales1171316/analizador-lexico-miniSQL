@@ -20,5 +20,6 @@ public enum Tokens {
     Error_Caracter_Invalido,
     Error_Cadena_Invalida,
     Error_Comentario_Sin_Cerrar,
-    Drop
+    Drop,
+    Truncate
 }

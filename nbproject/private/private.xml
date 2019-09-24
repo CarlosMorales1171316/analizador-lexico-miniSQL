@@ -5,6 +5,7 @@
         <group>
             <file>file:/C:/Users/carlo/Documents/NetBeansProjects/analizador-lexico-miniSQL/src/AnalizadorLexico/FormMain.java</file>
             <file>file:/C:/Users/carlo/Documents/NetBeansProjects/analizador-lexico-miniSQL/src/AnalizadorLexico/Lexer.flex</file>
+            <file>file:/C:/Users/carlo/Documents/NetBeansProjects/analizador-lexico-miniSQL/src/AnalizadorLexico/Tokens.java</file>
         </group>
     </open-files>
 </project-private>
