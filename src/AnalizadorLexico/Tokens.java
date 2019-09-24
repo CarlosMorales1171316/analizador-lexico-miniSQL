@@ -19,5 +19,6 @@ public enum Tokens {
     Operador,
     Error_Caracter_Invalido,
     Error_Cadena_Invalida,
-    Error_Comentario_Sin_Cerrar
+    Error_Comentario_Sin_Cerrar,
+    Drop
 }
