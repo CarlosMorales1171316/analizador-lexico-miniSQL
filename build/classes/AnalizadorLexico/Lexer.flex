@@ -13,6 +13,8 @@ Letra=[a-zA-Z]+
 LetraGuion=[a-zA-Z_]+
 Digito=0|[1-9][0-9]*
 
+DataType = (("INT"))
+
 /*Identificador*/
 Identificador = {Letra}({LetraGuion}|{Digito})* 
 
@@ -52,19 +54,19 @@ AlterDatabase = (("ALTER") {WhiteSpace}+ ("DATABASE") {WhiteSpace}+ ({Identifica
 
 AlterTable = (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ (("ALTER") {WhiteSpace}+ ("COLUMN") {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType} ({WhiteSpace}+ ("COLLATE") {WhiteSpace}+ {Identificador})? ({WhiteSpace}+ (("NULL")|("NOT") {WhiteSpace}+ ("NULL")))?) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
           |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ (("ADD") {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType} ({WhiteSpace}* [","] {Identificador} {WhiteSpace}+ {DataType})*) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
-          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ (("DROP") {WhiteSpace}+ (("CONSTRAINT")|("COLUMN")) {WhiteSpace}+ {Identificador} (({WhiteSpace}* [","] {WhiteSpace}* ("CONSTRAINT") {WhiteSpace}+ {Identificador})* | ({WhiteSpace}* [","] {WhiteSpace}* ("COLUMN") {WhiteSpace}+ {Identificador})*)) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ (("DROP") {WhiteSpace}+ (("CONSTRAINT")|("COLUMN")) {WhiteSpace}+ {Identificador} ((({WhiteSpace}* [","] {WhiteSpace}* ("CONSTRAINT") {WhiteSpace}+ {Identificador}) | ({WhiteSpace}* [","] {WhiteSpace}* ("COLUMN") {WhiteSpace}+ {Identificador}))*)) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
           |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ (("MODIFY") ({WhiteSpace}+ ("COLUMN"))? {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
           |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}+ (("ALTER") {WhiteSpace}+ ("COLUMN") {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType} ({WhiteSpace}+ ("COLLATE") {WhiteSpace}+ {Identificador})? ({WhiteSpace}+ (("NULL")|("NOT") {WhiteSpace}+ ("NULL")))?) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
           |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}+ (("ADD") {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType} ({WhiteSpace}* [","] {Identificador} {WhiteSpace}+ {DataType})*) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
-          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}+ (("DROP") {WhiteSpace}+ (("CONSTRAINT")|("COLUMN")) {WhiteSpace}+ {Identificador} (({WhiteSpace}* [","] {WhiteSpace}* ("CONSTRAINT") {WhiteSpace}+ {Identificador})* | ({WhiteSpace}* [","] {WhiteSpace}* ("COLUMN") {WhiteSpace}+ {Identificador})*)) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}+ (("DROP") {WhiteSpace}+ (("CONSTRAINT")|("COLUMN")) {WhiteSpace}+ {Identificador} ((({WhiteSpace}* [","] {WhiteSpace}* ("CONSTRAINT") {WhiteSpace}+ {Identificador}) | ({WhiteSpace}* [","] {WhiteSpace}* ("COLUMN") {WhiteSpace}+ {Identificador}))*)) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
           |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}+ (("MODIFY") ({WhiteSpace}+ ("COLUMN"))? {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
 
 AlterUser = (("ALTER") {WhiteSpace}+ ("USER") {WhiteSpace}+ {Identificador} {WhiteSpace}*  [";"] {WhiteSpace}* ("GO")?)
  
 AlterIndex =  (("ALTER") {WhiteSpace}+ ("INDEX") {WhiteSpace}+ ({Identificador}|("ALL")) {WhiteSpace}+ ("ON") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}*  [";"] {WhiteSpace}* ("GO")?)
 
-AlterView = (("ALTER") {WhiteSpace}+ ("VIEW") {WhiteSpace}+  ({Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* ["("] {WhiteSpace}* {Identificador} {WhiteSpace}* ({WhiteSpace}* [","] {WhiteSpace}* {Identificador} {WhiteSpace}*)* {WhiteSpace}* [")"] {WhiteSpace}* ("AS") {WhiteSpace}+ {Select} {WhiteSpace}* ({WhiteSpace}* ("WITH") {WhiteSpace}+ ("CHECK") {WhiteSpace}+ ("OPTION") {WhiteSpace}*)? {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
-          | (("ALTER") {WhiteSpace}+ ("VIEW") {WhiteSpace}+  ({Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ ("AS") {WhiteSpace}+ {Select} {WhiteSpace}* ({WhiteSpace}* ("WITH") {WhiteSpace}+ ("CHECK") {WhiteSpace}+ ("OPTION") {WhiteSpace}*)? {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+AlterView = (("ALTER") {WhiteSpace}+ ("VIEW") {WhiteSpace}+  ({Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* ["("] {WhiteSpace}* {Identificador} {WhiteSpace}* ({WhiteSpace}* [","] {WhiteSpace}* {Identificador} {WhiteSpace}*)* {WhiteSpace}* [")"] {WhiteSpace}* ("AS") {WhiteSpace}+ {Select} {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+          | (("ALTER") {WhiteSpace}+ ("VIEW") {WhiteSpace}+  ({Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ ("AS") {WhiteSpace}+ {Select} {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
 
 /*DROP*/
 DropDatabase = (("DROP") {WhiteSpace}+ ("DATABASE") {WhiteSpace}+ {Identificador} {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
@@ -85,7 +87,7 @@ DropView =   (("DROP") {WhiteSpace}+ ("VIEW") {WhiteSpace}+ ({Identificador}"."{
 
 /*TRUNCATE*/
 TruncateTable =   (("TRUNCATE") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
-                | (("TRUNCATE") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)  
+                | (("TRUNCATE") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)  
 
  
 /*Variables*/
