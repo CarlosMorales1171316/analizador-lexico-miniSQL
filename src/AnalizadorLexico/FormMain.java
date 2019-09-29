@@ -210,6 +210,10 @@ public class FormMain extends javax.swing.JFrame {
                     return;
                 }
                 switch (tokens) {
+                    case Alter:
+                    String [] dato2 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
+                    tablaSintactico.addRow(dato2);
+                    break;
                     case Drop:
                     String [] dato3 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
                     tablaSintactico.addRow(dato3);

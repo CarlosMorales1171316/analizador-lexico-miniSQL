@@ -42,32 +42,50 @@ Comment = {SQLSingleLineComment} | {SQLMultiLineComment}
 ErrorComment = ("/*"[^\r\n.*]*)  
 ErrorCadena = ("'"([^'\r\n]*))
 
+/*DML*/
+Select = {WhiteSpace}*
 
 /*DDL*/
-DropDatabase = (("DROP") {WhiteSpace}* ("DATABASE") {WhiteSpace}* (("IF") {WhiteSpace}* ("EXISTS"))? {WhiteSpace}* {Identificador} {WhiteSpace}* [";"])
-             | (("DROP") {WhiteSpace}* ("DATABASE") {WhiteSpace}* (("IF") {WhiteSpace}* ("EXISTS"))? {WhiteSpace}* ({Identificador}{WhiteSpace}*[","]{WhiteSpace}*{Identificador}({WhiteSpace}*[","]{WhiteSpace}*{Identificador})*)+ {WhiteSpace}* [";"])
+/*ALTER*/
+AlterDatabase = (("ALTER") {WhiteSpace}+ ("DATABASE") {WhiteSpace}+ ({Identificador} | ("CURRENT")) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+              | (("ALTER") {WhiteSpace}+ ("DATABASE") {WhiteSpace}+ ({Identificador} | ("CURRENT")) {WhiteSpace}+ (("COLLATE") {WhiteSpace}+ {Identificador} | {Identificador} | ("SET") {WhiteSpace}+ ({Identificador}|{Digito}) ({WhiteSpace}* [","] {WhiteSpace}* ({Identificador}|{Digito}))*) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
 
-DropTable =   (("DROP") {WhiteSpace}* ("TABLE") {WhiteSpace}* (("IF") {WhiteSpace}* ("EXISTS"))? {WhiteSpace}* ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* [";"])
-            | (("DROP") {WhiteSpace}* ("TABLE") {WhiteSpace}* (("IF") {WhiteSpace}* ("EXISTS"))? {WhiteSpace}* ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) ({WhiteSpace}* [","]{WhiteSpace}*({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}))+ {WhiteSpace}* [";"])
-            | (("DROP") {WhiteSpace}* ("TABLE") {WhiteSpace}* (("IF") {WhiteSpace}* ("EXISTS"))? {WhiteSpace}* (["#"]|("##")) {Identificador} {WhiteSpace}* [";"])
-            | (("DROP") {WhiteSpace}* ("TABLE") {WhiteSpace}* (("IF") {WhiteSpace}* ("EXISTS"))? {WhiteSpace}* (["#"]|("##")) {Identificador}({WhiteSpace}*[","]{WhiteSpace}*(["#"]|("##")) {Identificador})+ {WhiteSpace}* [";"])
+AlterTable = (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ (("ALTER") {WhiteSpace}+ ("COLUMN") {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType} ({WhiteSpace}+ ("COLLATE") {WhiteSpace}+ {Identificador})? ({WhiteSpace}+ (("NULL")|("NOT") {WhiteSpace}+ ("NULL")))?) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ (("ADD") {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType} ({WhiteSpace}* [","] {Identificador} {WhiteSpace}+ {DataType})*) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ (("DROP") {WhiteSpace}+ (("CONSTRAINT")|("COLUMN")) {WhiteSpace}+ {Identificador} (({WhiteSpace}* [","] {WhiteSpace}* ("CONSTRAINT") {WhiteSpace}+ {Identificador})* | ({WhiteSpace}* [","] {WhiteSpace}* ("COLUMN") {WhiteSpace}+ {Identificador})*)) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ (("MODIFY") ({WhiteSpace}+ ("COLUMN"))? {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}+ (("ALTER") {WhiteSpace}+ ("COLUMN") {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType} ({WhiteSpace}+ ("COLLATE") {WhiteSpace}+ {Identificador})? ({WhiteSpace}+ (("NULL")|("NOT") {WhiteSpace}+ ("NULL")))?) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}+ (("ADD") {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType} ({WhiteSpace}* [","] {Identificador} {WhiteSpace}+ {DataType})*) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}+ (("DROP") {WhiteSpace}+ (("CONSTRAINT")|("COLUMN")) {WhiteSpace}+ {Identificador} (({WhiteSpace}* [","] {WhiteSpace}* ("CONSTRAINT") {WhiteSpace}+ {Identificador})* | ({WhiteSpace}* [","] {WhiteSpace}* ("COLUMN") {WhiteSpace}+ {Identificador})*)) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}+ (("MODIFY") ({WhiteSpace}+ ("COLUMN"))? {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
 
-DropLogin = (("DROP") {WhiteSpace}* ("LOGIN") {WhiteSpace}* {Identificador} {WhiteSpace}* [";"])
+AlterUser = (("ALTER") {WhiteSpace}+ ("USER") {WhiteSpace}+ {Identificador} {WhiteSpace}*  [";"] {WhiteSpace}* ("GO")?)
+ 
+AlterIndex =  (("ALTER") {WhiteSpace}+ ("INDEX") {WhiteSpace}+ ({Identificador}|("ALL")) {WhiteSpace}+ ("ON") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}*  [";"] {WhiteSpace}* ("GO")?)
 
-DropIndex =   (("DROP") {WhiteSpace}* ("INDEX") {WhiteSpace}* (("IF") {WhiteSpace}* ("EXISTS"))? {WhiteSpace}* {Identificador} {WhiteSpace}* ("ON") {WhiteSpace}* ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* [";"])
-            | (("DROP") {WhiteSpace}* ("INDEX") {WhiteSpace}* (("IF") {WhiteSpace}* ("EXISTS"))? {WhiteSpace}* {Identificador} {WhiteSpace}* ("ON") {WhiteSpace}* ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) ({WhiteSpace}* [","] {WhiteSpace}* {Identificador} {WhiteSpace}* ("ON") {WhiteSpace}* ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}))* {WhiteSpace}* [";"])
-            | (("DROP") {WhiteSpace}* ("INDEX") {WhiteSpace}* (("IF") {WhiteSpace}* ("EXISTS"))? {WhiteSpace}* {Identificador} {WhiteSpace}* ("ON") {WhiteSpace}* ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* ("WITH") {WhiteSpace}* ["("] {WhiteSpace}* ( (("ONLINE") {WhiteSpace}* ["="] {WhiteSpace}* ("ON"|"OFF") {WhiteSpace}*) | (("MAXDOP") {WhiteSpace}* ["="] {WhiteSpace}* {Digito} {WhiteSpace}*) | (("MOVE") {WhiteSpace}* ("TO") {WhiteSpace}* ({Identificador}|{Identificador}{WhiteSpace}*["("]{WhiteSpace}*{Identificador}{WhiteSpace}*[")"]{WhiteSpace}*)) | (("FILESTREAM_ON") {WhiteSpace}* {Identificador} {WhiteSpace}*) ) ({WhiteSpace}*[","]{WhiteSpace}*( (("ONLINE") {WhiteSpace}* ["="] {WhiteSpace}* ("ON"|"OFF") {WhiteSpace}*) | (("MAXDOP") {WhiteSpace}* ["="] {WhiteSpace}* {Digito} {WhiteSpace}*) | (("MOVE") {WhiteSpace}* ("TO") {WhiteSpace}* ({Identificador}|{Identificador}{WhiteSpace}*["("]{WhiteSpace}*{Identificador}{WhiteSpace}*[")"]{WhiteSpace}*)) | (("FILESTREAM_ON") {WhiteSpace}* {Identificador} {WhiteSpace}*) ))* {WhiteSpace}* [")"] {WhiteSpace}* [";"])
-            | (("DROP") {WhiteSpace}* ("INDEX") {WhiteSpace}* (("IF") {WhiteSpace}* ("EXISTS"))? {WhiteSpace}* {Identificador} {WhiteSpace}* ("ON") {WhiteSpace}* ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* ("WITH") {WhiteSpace}* ["("] {WhiteSpace}* ( (("ONLINE") {WhiteSpace}* ["="] {WhiteSpace}* ("ON"|"OFF") {WhiteSpace}*) | (("MAXDOP") {WhiteSpace}* ["="] {WhiteSpace}* {Digito} {WhiteSpace}*) | (("MOVE") {WhiteSpace}* ("TO") {WhiteSpace}* ({Identificador}|{Identificador}{WhiteSpace}*["("]{WhiteSpace}*{Identificador}{WhiteSpace}*[")"]{WhiteSpace}*)) | (("FILESTREAM_ON") {WhiteSpace}* {Identificador} {WhiteSpace}*) ) ({WhiteSpace}*[","]{WhiteSpace}*( (("ONLINE") {WhiteSpace}* ["="] {WhiteSpace}* ("ON"|"OFF") {WhiteSpace}*) | (("MAXDOP") {WhiteSpace}* ["="] {WhiteSpace}* {Digito} {WhiteSpace}*) | (("MOVE") {WhiteSpace}* ("TO") {WhiteSpace}* ({Identificador}|{Identificador}{WhiteSpace}*["("]{WhiteSpace}*{Identificador}{WhiteSpace}*[")"]{WhiteSpace}*)) | (("FILESTREAM_ON") {WhiteSpace}* {Identificador} {WhiteSpace}*) ))* {WhiteSpace}* [")"] ({WhiteSpace}* [","] {WhiteSpace}* {WhiteSpace}* {Identificador} {WhiteSpace}* ("ON") {WhiteSpace}* ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* ("WITH") {WhiteSpace}* ["("] {WhiteSpace}* ( (("ONLINE") {WhiteSpace}* ["="] {WhiteSpace}* ("ON"|"OFF") {WhiteSpace}*) | (("MAXDOP") {WhiteSpace}* ["="] {WhiteSpace}* {Digito} {WhiteSpace}*) | (("MOVE") {WhiteSpace}* ("TO") {WhiteSpace}* ({Identificador}|{Identificador}{WhiteSpace}*["("]{WhiteSpace}*{Identificador}{WhiteSpace}*[")"]{WhiteSpace}*)) | (("FILESTREAM_ON") {WhiteSpace}* {Identificador} {WhiteSpace}*) ) ({WhiteSpace}*[","]{WhiteSpace}*( (("ONLINE") {WhiteSpace}* ["="] {WhiteSpace}* ("ON"|"OFF") {WhiteSpace}*) | (("MAXDOP") {WhiteSpace}* ["="] {WhiteSpace}* {Digito} {WhiteSpace}*) | (("MOVE") {WhiteSpace}* ("TO") {WhiteSpace}* ({Identificador}|{Identificador}{WhiteSpace}*["("]{WhiteSpace}*{Identificador}{WhiteSpace}*[")"]{WhiteSpace}*)) | (("FILESTREAM_ON") {WhiteSpace}* {Identificador} {WhiteSpace}*) ))* {WhiteSpace}* [")"] {WhiteSpace}*)* {WhiteSpace}* [";"])
+AlterView = (("ALTER") {WhiteSpace}+ ("VIEW") {WhiteSpace}+  ({Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* ["("] {WhiteSpace}* {Identificador} {WhiteSpace}* ({WhiteSpace}* [","] {WhiteSpace}* {Identificador} {WhiteSpace}*)* {WhiteSpace}* [")"] {WhiteSpace}* ("AS") {WhiteSpace}+ {Select} {WhiteSpace}* ({WhiteSpace}* ("WITH") {WhiteSpace}+ ("CHECK") {WhiteSpace}+ ("OPTION") {WhiteSpace}*)? {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+          | (("ALTER") {WhiteSpace}+ ("VIEW") {WhiteSpace}+  ({Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ ("AS") {WhiteSpace}+ {Select} {WhiteSpace}* ({WhiteSpace}* ("WITH") {WhiteSpace}+ ("CHECK") {WhiteSpace}+ ("OPTION") {WhiteSpace}*)? {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
 
-DropView =   (("DROP") {WhiteSpace}* ("VIEW") {WhiteSpace}* (("IF") {WhiteSpace}* ("EXISTS"))? {WhiteSpace}* ({Identificador}"."{Identificador}|{Identificador}) {WhiteSpace}* [";"])
-           | (("DROP") {WhiteSpace}* ("VIEW") {WhiteSpace}* (("IF") {WhiteSpace}* ("EXISTS"))? {WhiteSpace}* ({Identificador}"."{Identificador}|{Identificador})({WhiteSpace}* [","] {WhiteSpace}* ({Identificador}"."{Identificador}|{Identificador}))* {WhiteSpace}* [";"])
+/*DROP*/
+DropDatabase = (("DROP") {WhiteSpace}+ ("DATABASE") {WhiteSpace}+ {Identificador} {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+             | (("DROP") {WhiteSpace}+ ("DATABASE") {WhiteSpace}+ ({Identificador}{WhiteSpace}*[","]{WhiteSpace}*{Identificador}({WhiteSpace}*[","]{WhiteSpace}*{Identificador})*)+ {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
 
+DropTable =   (("DROP") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+            | (("DROP") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) ({WhiteSpace}* [","]{WhiteSpace}*({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}))+ {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+            | (("DROP") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+            | (("DROP") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador}({WhiteSpace}*[","]{WhiteSpace}*(["#"]|("##")) {Identificador})+ {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
 
+DropUser = (("DROP") {WhiteSpace}+ ("USER") {WhiteSpace}+ {Identificador} {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
 
-TruncateTable =   (("TRUNCATE") {WhiteSpace}* ("TABLE") {WhiteSpace}* ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* [";"])
-                | (("TRUNCATE") {WhiteSpace}* ("TABLE") {WhiteSpace}* ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* ("WITH") {WhiteSpace}* ["("] {WhiteSpace}* ("PARTITIONS") {WhiteSpace}* ["("] {WhiteSpace}* {Digito} {WhiteSpace}* ({WhiteSpace}* [","] {WhiteSpace}* {Digito} {WhiteSpace}*)* {WhiteSpace}* [")"] {WhiteSpace}* [")"] {WhiteSpace}* [";"])
-                | (("TRUNCATE") {WhiteSpace}* ("TABLE") {WhiteSpace}* ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* ("WITH") {WhiteSpace}* ["("] {WhiteSpace}* ("PARTITIONS") {WhiteSpace}* ["("] {WhiteSpace}* {Digito} {WhiteSpace}* ({WhiteSpace}* [","] {WhiteSpace}* {Digito} {WhiteSpace}*)* ("TO") {WhiteSpace}* {Digito} ({WhiteSpace}* [","] {WhiteSpace}* {Digito} {WhiteSpace}* ({WhiteSpace}* [","] {WhiteSpace}* {Digito} {WhiteSpace}*)* ("TO") {WhiteSpace}* {Digito})* {WhiteSpace}* [")"] {WhiteSpace}* [")"] {WhiteSpace}* [";"])
+DropIndex =   (("DROP") {WhiteSpace}+ ("INDEX") {WhiteSpace}+ {Identificador} {WhiteSpace}+ ("ON") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+            | (("DROP") {WhiteSpace}+ ("INDEX") {WhiteSpace}+ {Identificador} {WhiteSpace}+ ("ON") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) ({WhiteSpace}* [","] {WhiteSpace}* {Identificador} {WhiteSpace}+ ("ON") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}))* {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+            
+DropView =   (("DROP") {WhiteSpace}+ ("VIEW") {WhiteSpace}+ ({Identificador}"."{Identificador}|{Identificador}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+           | (("DROP") {WhiteSpace}+ ("VIEW") {WhiteSpace}+ ({Identificador}"."{Identificador}|{Identificador})({WhiteSpace}* [","] {WhiteSpace}* ({Identificador}"."{Identificador}|{Identificador}))* {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
 
+/*TRUNCATE*/
+TruncateTable =   (("TRUNCATE") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+                | (("TRUNCATE") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)  
 
  
 /*Variables*/
@@ -703,6 +721,36 @@ while { if(OperadoresLista.contains(yytext())){
       }
 }
 
+{AlterDatabase} { getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
+        toString=yytext();  
+        return Alter; 
+      }
+{AlterTable} { getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
+        toString=yytext();  
+        return Alter; 
+      }
+{AlterUser} { getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
+        toString=yytext();  
+        return Alter; 
+      }
+{AlterIndex} { getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
+        toString=yytext();  
+        return Alter; 
+      }
+{AlterView} { getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
+        toString=yytext();  
+        return Alter; 
+      }
 {DropDatabase} { getLinea=yyline+1;
         getColumnaInicial=yycolumn+1;
         getColumnaFinal=(yycolumn+1)+yytext().length()-1;
@@ -715,7 +763,7 @@ while { if(OperadoresLista.contains(yytext())){
         toString=yytext();  
         return Drop; 
       }
-{DropLogin} { getLinea=yyline+1;
+{DropUser} { getLinea=yyline+1;
         getColumnaInicial=yycolumn+1;
         getColumnaFinal=(yycolumn+1)+yytext().length()-1;
         toString=yytext();  
@@ -746,4 +794,6 @@ while { if(OperadoresLista.contains(yytext())){
 {ErrorComment} {getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Error_Comentario_Sin_Cerrar;}
 {ErrorCadena} {getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Error_Cadena_Invalida;}
  . {getColumnaInicial=yycolumn+1; getColumnaFinal=(yycolumn+1)+yytext().length()-1; getLinea=yyline+1; toString=yytext(); return Error_Caracter_Invalido;}
+
+
 
