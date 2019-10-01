@@ -210,17 +210,33 @@ public class FormMain extends javax.swing.JFrame {
                     return;
                 }
                 switch (tokens) {
+                    case Insert:
+                    String [] dato1_2 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
+                    tablaSintactico.addRow(dato1_2);
+                    break;
+                    case Update:
+                    String [] dato1_3 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
+                    tablaSintactico.addRow(dato1_3);
+                    break;
+                    case Delete:
+                    String [] dato1_4 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
+                    tablaSintactico.addRow(dato1_4);
+                    break;
+                    case Create:
+                    String [] dato2_1 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
+                    tablaSintactico.addRow(dato2_1);
+                    break;
                     case Alter:
-                    String [] dato2 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
-                    tablaSintactico.addRow(dato2);
+                    String [] dato2_2 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
+                    tablaSintactico.addRow(dato2_2);
                     break;
                     case Drop:
-                    String [] dato3 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
-                    tablaSintactico.addRow(dato3);
+                    String [] dato2_3 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
+                    tablaSintactico.addRow(dato2_3);
                     break;
                     case Truncate:
-                    String [] dato4 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
-                    tablaSintactico.addRow(dato4);
+                    String [] dato2_4 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
+                    tablaSintactico.addRow(dato2_4);
                     break;
                     
                     

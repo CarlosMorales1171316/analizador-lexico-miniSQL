@@ -10,13 +10,17 @@ import java.util.ArrayList;
 
 /*Alfabeto-Diccionarios*/
 Letra=[a-zA-Z]+
+letra=[a-zA-Z'-]+ 
 LetraGuion=[a-zA-Z_]+
+letraGuion= [a-zA-Z_,'-]+
 Digito=0|[1-9][0-9]*
-
-DataType = (("INT"))
+digito=0|[1-9][0-9]*|[0-9][0-9]*
+Signos = (["["]|["]"]|["("]|[")"]|["#"]|["##"]|["."]|[","]|["-"]|["/"]|[";"]|["{"]|["}"])
+DataType = ("CHAR(" {Digito} ")" | "BINARY(" {Digito} ")" |"BLOB("{Digito}")" | "BIT("{Digito}")" |"SMALLINT(" {Digito} ")" | "INT("{Digito}")" | "INTEGER("{Digito}")" |  "FLOAT("{Digito}")" | "CHAR("{Digito}")" | "VARCHAR("{Digito}")" | "BINARY("{Digito}")" | "FLOAT("{Digito}")"|("BLOB") |("INT") |("BOOLEAN") | ("DATE") | ("YEAR") | ("VARCHAR(MAX)") |("IMAGE") | ("BIT") | ("SMALLINT") | ("REAL")| ("DATE") | ("TIME") | ("TIMESTAMP") |("CURSOR") |("TABLE") | ("TEXT") | ("BYTE") | ("INTEGER") | ("LONG")|("DOUBLE")|("TEXT")| ("NCHAR") |("VARCHAR"))
 
 /*Identificador*/
 Identificador = {Letra}({LetraGuion}|{Digito})* 
+identificador = {letra}({letraGuion}|{digito})*
 
 
 /*Constantes*/
@@ -35,59 +39,97 @@ String = ("'"([^'\r\n])*"'")
 */
 LineTerminator = \r|\n|\r\n
 InputCharacter = [^\r\n]
+Espacio = [ ]
 WhiteSpace = {LineTerminator} | [ \t\f]
 
 /*Comentarios*/
 SQLSingleLineComment = "--" {InputCharacter}*
 SQLMultiLineComment = ("/*" ~"*/") 
+ErrorCreate = ("CREATE*" ~"GO") 
 Comment = {SQLSingleLineComment} | {SQLMultiLineComment}
 ErrorComment = ("/*"[^\r\n.*]*)  
 ErrorCadena = ("'"([^'\r\n]*))
 
 /*DML*/
-Select = {WhiteSpace}*
+/*SELECT*/
+select = (("SELECT") {WhiteSpace}+ ( "."|("("| ")"|{identificador}) {WhiteSpace}*)+  {WhiteSpace}* ("FROM") {WhiteSpace}* ( ({identificador}|"("|")"|".") {WhiteSpace}*)+ {WhiteSpace}*  ("AS" {WhiteSpace}* {identificador} {WhiteSpace}* ("(")? {WhiteSpace}* ({identificador}  {WhiteSpace}*)+ (")")?)?   {WhiteSpace}* (("WHERE")  {WhiteSpace}* ( ("<"|">"|"-" |"@"|"="|"("|")" |{identificador}) {WhiteSpace}*)+)?)
+
+
+/*INSERT*/
+insertValues = ((("(") {WhiteSpace}* ({identificador} {WhiteSpace}*)+ {WhiteSpace}* (")")) | (("VALUES") {WhiteSpace}* ({WhiteSpace}* ("(") {WhiteSpace}* (("DEFAULT"|"NULL" | (( "(" |")" |{identificador}) {WhiteSpace}*)+) {WhiteSpace}* (",")?) {WhiteSpace}* (")") {WhiteSpace}* (",")? )+) | (("DEFAULT") {WhiteSpace}* ("VALUES")) | {select})     
+Insert = ( ("INSERT") ({WhiteSpace}+ ("TOP") {WhiteSpace}* (("(") {WhiteSpace}* {Digito} {WhiteSpace}*(")") | ({Digito})) ({WhiteSpace}* ("PERCENT") {WhiteSpace}*)?)? ({WhiteSpace}+ ("INTO"))? {WhiteSpace}* ((("##"|"#") {Identificador})|({Identificador}"."{Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador})) {WhiteSpace}* (("(") {WhiteSpace}* ({identificador} {WhiteSpace}*)+ (")"))? {WhiteSpace}* {insertValues} {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
+
+/*UPDATE*/
+from = ((({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) ({WhiteSpace}* ("AS") {WhiteSpace}* {Identificador})?) | ((({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) ({WhiteSpace}* ("AS") {WhiteSpace}* {Identificador})?) {WhiteSpace}+ {join_type} {WhiteSpace}+ (({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) ({WhiteSpace}* ("AS") {WhiteSpace}* {Identificador})?)) | ((({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) ({WhiteSpace}* ("AS") {WhiteSpace}* {Identificador})?) {WhiteSpace}* ("CROSS") {WhiteSpace}* ("JOIN") {WhiteSpace}* (({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) ({WhiteSpace}* ("AS") {WhiteSpace}* {Identificador})?)) | (["("]  {WhiteSpace}* (({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) ({WhiteSpace}* ("AS") {WhiteSpace}* {Identificador})?) {WhiteSpace}* [")"]) | (["("] {WhiteSpace}* ((({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) ({WhiteSpace}* ("AS") {WhiteSpace}* {Identificador})?) {WhiteSpace}+ {join_type} {WhiteSpace}+ (({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) ({WhiteSpace}* ("AS") {WhiteSpace}* {Identificador})?)) {WhiteSpace}* [")"])  {WhiteSpace}* ("ON") {WhiteSpace}* {search_condition_without_match})     
+join_type = (((("INNER"){WhiteSpace}+)? ("JOIN")) | (("LEFT"){WhiteSpace}+ (("OUTER"){WhiteSpace}+)? ("JOIN")) | (("RIGHT"){WhiteSpace}+ (("OUTER"){WhiteSpace}+)? ("JOIN")) | (("FULL"){WhiteSpace}+ (("OUTER"){WhiteSpace}+)? ("JOIN")))
+Update = (("UPDATE") {WhiteSpace}+ (("TOP") {WhiteSpace}* ({Digito}|["("]{WhiteSpace}*{Digito}{WhiteSpace}*[")"]) ({WhiteSpace}+("PERCENT"))?)? {WhiteSpace}* ({Identificador}"."{Identificador}"."{Identificador}"."{Identificador}|{Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador} | ["@"]{Identificador}) {WhiteSpace}+ ("SET") {WhiteSpace}*  ({Identificador} {WhiteSpace}* ["="] {WhiteSpace}* {Identificador}|{Int}|{Float}|("@"){Identificador}|"'"{Identificador}"'"|"'"{Int}"'"|"'"{Float}"'" |("NULL")|("DEFAULT")) | (("@"){Identificador} {WhiteSpace}* (["="] | ("<>") | ("!=") | [">"] | (">=") | ["<"] | ("<=")) {WhiteSpace}* ({Identificador}|{Int}|{Float}|("@"){Identificador}|"'"{Identificador}"'"|"'"{Int}"'"|"'"{Float}"'"))  |  (("@"){Identificador} {WhiteSpace}* ["="] {WhiteSpace}* ("COLUMN") {WhiteSpace}* (["="] | ("<>") | ("!=") | [">"] | (">=") | ["<"] | ("<=")) {WhiteSpace}* ({Identificador}|{Int}|{Float}|("@"){Identificador}|"'"{Identificador}"'"|"'"{Int}"'"|"'"{Float}"'")) ({WhiteSpace}* [","] {WhiteSpace}* ({Identificador} {WhiteSpace}* ["="] {WhiteSpace}* {Identificador}|{Int}|{Float}|("@"){Identificador}|"'"{Identificador}"'"|"'"{Int}"'"|"'"{Float}"'" |("NULL")|("DEFAULT")) | (("@"){Identificador} {WhiteSpace}* (["="] | ("<>") | ("!=") | [">"] | (">=") | ["<"] | ("<=")) {WhiteSpace}* ({Identificador}|{Int}|{Float}|("@"){Identificador}|"'"{Identificador}"'"|"'"{Int}"'"|"'"{Float}"'"))  |  (("@"){Identificador} {WhiteSpace}* ["="] {WhiteSpace}* ("COLUMN") {WhiteSpace}* (["="] | ("<>") | ("!=") | [">"] | (">=") | ["<"] | ("<=")) {WhiteSpace}* ({Identificador}|{Int}|{Float}|("@"){Identificador}|"'"{Identificador}"'"|"'"{Int}"'"|"'"{Float}"'")))* ({WhiteSpace}+ ("OUTPUT") {WhiteSpace}+ {Identificador} ["."] (["*"] | {Identificador}) (({WhiteSpace}+ ("AS"))? {WhiteSpace}+ {Identificador})? {WhiteSpace}+ ("INTO") {WhiteSpace}+ ({Identificador} | ["@"]{Identificador}) ({WhiteSpace}+ {Identificador})?)? {WhiteSpace}+ ("FROM") {WhiteSpace}+  {from} {WhiteSpace}+ ("WHERE") {WhiteSpace}+ {Where} {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
+
+
+/*DELETE*/
+Where =  (({search_condition_without_match} | {search_condition_without_match} {WhiteSpace}+ ("AND") {WhiteSpace}+ {search_condition_without_match}))
+search_condition_without_match = (((("NOT"){WhiteSpace}+)? {predicate} | ["("]{WhiteSpace}* (("NOT"){WhiteSpace}+)? {predicate} {WhiteSpace}* [")"]) ((("AND")|("OR")) ({WhiteSpace}+ ("NOT") {WhiteSpace}+)? {predicate} ({WhiteSpace}* [","] (("AND")|("OR")) ({WhiteSpace}+ ("NOT") {WhiteSpace}+)? {predicate})*)?)
+predicate = (((({Identificador}|("@"){Identificador}) {WhiteSpace}* (["="] | ("<>") | ("!=") | [">"] | (">=") | ["<"] | ("<=")) {WhiteSpace}* ({Identificador}|{Int}|{Float}|("@"){Identificador}|"'"{Identificador}"'"|"'"{Int}"'"|"'"{Float}"'")) | ({Identificador} {WhiteSpace}+ (("NOT") {WhiteSpace}+)? ("LIKE") {WhiteSpace}+ ["'"] ((["%"]({Identificador}|{Digito}|{Signos}|{Int}|{Float}|{Espacio})+["%"]) | (["%"]({Identificador}|{Digito}|{Signos}|{Int}|{Float}|{Espacio})+) | (({Identificador}|{Digito}|{Signos}|{Int}|{Float}|{Espacio})+["%"]) | (["@"]{Identificador})) {WhiteSpace}* ["'"] ({WhiteSpace}+ ("ESCAPE") {WhiteSpace}* "'"{Identificador}"'" )?) | ({Identificador} {WhiteSpace}+ ("NOT" {WhiteSpace}+)? ("BETWEEN") {WhiteSpace}+ ({Int}|{Float}) {WhiteSpace}+ ("AND") {WhiteSpace}+ ({Int}|{Float})) | ({Identificador} {WhiteSpace}+ ("IS") {WhiteSpace}+ (("NOT"){WhiteSpace}+)? ("NULL"))))
+Delete =  (("DELETE") {WhiteSpace}+ (("TOP") {WhiteSpace}* ({Digito}|["("]{WhiteSpace}*{Digito}{WhiteSpace}*[")"] {WhiteSpace}*) ({WhiteSpace}+("PERCENT"))?)? ((("FROM"){WhiteSpace}+)? ({Identificador}"."{Identificador}"."{Identificador}"."{Identificador}|{Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador} | ["@"]{Identificador})) ({WhiteSpace}+ ("OUTPUT") {WhiteSpace}+ {Identificador} ["."] (["*"] | {Identificador}) (({WhiteSpace}+ ("AS"))? {WhiteSpace}+ {Identificador})? {WhiteSpace}+ ("INTO") {WhiteSpace}+ ({Identificador} | ["@"]{Identificador}) ({WhiteSpace}+ {Identificador})?)? ({WhiteSpace}+ ("FROM") ({WhiteSpace}+ {Identificador} ({WhiteSpace}* [","] {Identificador})*)?)? ({WhiteSpace}+ ("WHERE") {WhiteSpace}* (({Where}) | (("CURRENT") {WhiteSpace}+ ("OF") {WhiteSpace}+ (("GLOBAL"){WhiteSpace}+)? {Identificador} | {Identificador})?))? {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
 
 /*DDL*/
+/*CREATE*/
+CreateDatabase = (("CREATE") {WhiteSpace}+ ("DATABASE") {WhiteSpace}+ {Identificador} ({WhiteSpace}+ (("ON") {WhiteSpace}+ "PRIMARY"))? ({WhiteSpace}+ ("COLLATE") {WhiteSpace}+ {Identificador})? {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
+
+createTable = (("CREATE") {WhiteSpace}+ ("TABLE") {WhiteSpace}+  ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) ({WhiteSpace}* ("AS") {WhiteSpace}* {Identificador})?  {WhiteSpace}* ["("] {WhiteSpace}* {Identificador} {WhiteSpace}* {DataType} {WhiteSpace}* (("NULL")|("NOT"){WhiteSpace}*("NULL"))? {WhiteSpace}* ({WhiteSpace}* [","] {WhiteSpace}* {Identificador} {WhiteSpace}* {DataType} {WhiteSpace}* (("NULL")|("NOT"){WhiteSpace}*("NULL"))?)* {WhiteSpace}* [")"] {WhiteSpace}* [";"]  {WhiteSpace}* ("GO"))
+             | (("CREATE") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (("#")|("##")) {Identificador} ({WhiteSpace}* ("AS") {WhiteSpace}* {Identificador})?  {WhiteSpace}* ["("] {WhiteSpace}* {Identificador} {WhiteSpace}* {DataType} {WhiteSpace}* ({WhiteSpace}* [","] {WhiteSpace}* {Identificador} {WhiteSpace}* {DataType} )* {WhiteSpace}* [")"] {WhiteSpace}* [";"]  {WhiteSpace}* ("GO"))
+
+ColumnConstraint = (("CONSTRAINT") {WhiteSpace}+ {identificador})?  {WhiteSpace}* (((("PRIMARY" {WhiteSpace}+ "KEY")| "UNIQUE") {WhiteSpace}+ ("CLUSTERED"|"NONCLUSTERED")?  ({WhiteSpace}+ ("ON") (((({identificador}|")"|"("|"["|"]"){WhiteSpace}*)+)))?) | ((("FOREIGN") {WhiteSpace}+ ("KEY") {WhiteSpace}*(({identificador}|"("|")"|"["|"]"|".") {WhiteSpace}*)+ {WhiteSpace}+)? ("REFERENCES") {WhiteSpace}+ (({identificador}|"("|")"|"["|"]"|".") {WhiteSpace}*)+ (({WhiteSpace}* ("ON DELETE"|"ON UPDATE") {WhiteSpace}* ("NO ACTION"|"CASCADE"|"SET NULL"|"SET DEFAULT"))+)? {WhiteSpace}* ("NOT" {WhiteSpace}+ "FOR" {WhiteSpace}+ "REPLICATION")?) | (("CHECK") {WhiteSpace}+ ("NOT"{WhiteSpace}+ "FOR" {WhiteSpace}+ "REPLICATION")? {WhiteSpace}+ {Identificador}) )
+ColumnIndex = (("INDEX") {WhiteSpace}+ {identificador} ({WhiteSpace}+ ("CLUSTERED"|"NONCLUSTERED"))? ({WhiteSpace}+ ("ON") {WhiteSpace}+ ((({identificador}|")"|"("|"["|"]")|{WhiteSpace}*)+))?)
+ColumnDefinition=  ({identificador} {WhiteSpace}+ {DataType} ({WhiteSpace}+ ("COLLATE") {WhiteSpace}+ {identificador})? ({WhiteSpace}+ ("CONSTRAINT") {WhiteSpace}+ {identificador})? ({WhiteSpace}+ ("DEFAULT") {WhiteSpace}+ {Identificador})? ({WhiteSpace}+ ("NULL"|"NOT NULL"))?)
+CreateTable = (("CREATE") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ((("##"|"#") {Identificador})|({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador})) {WhiteSpace}* ("(") ({WhiteSpace}* {ColumnDefinition} {WhiteSpace}* {ColumnConstraint}? {WhiteSpace}* {ColumnIndex}? {WhiteSpace}* (",")?)+ {WhiteSpace}* (")") {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
+
+
+CreateUser =  (("CREATE") {WhiteSpace}+ ("USER") ({WhiteSpace}+ {Identificador}|{WhiteSpace}* ["["] {WhiteSpace}* {Identificador} {WhiteSpace}* ["]"]) {WhiteSpace}*  [";"] {WhiteSpace}* ("GO"))                           
+                        
+CreateIndex = (("CREATE") {WhiteSpace}+ (("UNIQUE"){WhiteSpace}+)? ((("CLUSTERED")|("NONCLUSTERED")){WhiteSpace}+)? ("INDEX") {WhiteSpace}+ {Identificador} {WhiteSpace}+ ("ON") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* ["("] {WhiteSpace}* {Identificador} {WhiteSpace}* (("ASC")|("DESC"))? ({WhiteSpace}* [","] {WhiteSpace}* {Identificador} {WhiteSpace}*(("ASC")|("DESC"))?)* {WhiteSpace}* [")"] ({WhiteSpace}+ ("INCLUDE") {WhiteSpace}* ["("] {WhiteSpace}* {Identificador} ({WhiteSpace}* [","] {Identificador})* {WhiteSpace}* [")"])? ({WhiteSpace}* ("WHERE") {WhiteSpace}* {Where} {WhiteSpace}*)? {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
+
+CreateView = (("CREATE") {WhiteSpace}+ ("VIEW") {WhiteSpace}+ ({Identificador}"."{Identificador}|{Identificador}) {WhiteSpace}+ (["("] {WhiteSpace}* {Identificador} {WhiteSpace}* ({WhiteSpace}* [","] {Identificador})* {WhiteSpace}* [")"])? ("AS") {WhiteSpace}* {select} {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
+
 /*ALTER*/
-AlterDatabase = (("ALTER") {WhiteSpace}+ ("DATABASE") {WhiteSpace}+ ({Identificador} | ("CURRENT")) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
-              | (("ALTER") {WhiteSpace}+ ("DATABASE") {WhiteSpace}+ ({Identificador} | ("CURRENT")) {WhiteSpace}+ (("COLLATE") {WhiteSpace}+ {Identificador} | {Identificador} | ("SET") {WhiteSpace}+ ({Identificador}|{Digito}) ({WhiteSpace}* [","] {WhiteSpace}* ({Identificador}|{Digito}))*) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+AlterDatabase = (("ALTER") {WhiteSpace}+ ("DATABASE") {WhiteSpace}+ ({Identificador} | ("CURRENT")) {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
+              | (("ALTER") {WhiteSpace}+ ("DATABASE") {WhiteSpace}+ ({Identificador} | ("CURRENT")) {WhiteSpace}+ (("COLLATE") {WhiteSpace}+ {Identificador} | {Identificador} | ("SET") {WhiteSpace}+ ({Identificador}|{Digito}) ({WhiteSpace}* [","] {WhiteSpace}* ({Identificador}|{Digito}))*) {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
 
-AlterTable = (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ (("ALTER") {WhiteSpace}+ ("COLUMN") {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType} ({WhiteSpace}+ ("COLLATE") {WhiteSpace}+ {Identificador})? ({WhiteSpace}+ (("NULL")|("NOT") {WhiteSpace}+ ("NULL")))?) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
-          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ (("ADD") {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType} ({WhiteSpace}* [","] {Identificador} {WhiteSpace}+ {DataType})*) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
-          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ (("DROP") {WhiteSpace}+ (("CONSTRAINT")|("COLUMN")) {WhiteSpace}+ {Identificador} ((({WhiteSpace}* [","] {WhiteSpace}* ("CONSTRAINT") {WhiteSpace}+ {Identificador}) | ({WhiteSpace}* [","] {WhiteSpace}* ("COLUMN") {WhiteSpace}+ {Identificador}))*)) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
-          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ (("MODIFY") ({WhiteSpace}+ ("COLUMN"))? {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
-          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}+ (("ALTER") {WhiteSpace}+ ("COLUMN") {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType} ({WhiteSpace}+ ("COLLATE") {WhiteSpace}+ {Identificador})? ({WhiteSpace}+ (("NULL")|("NOT") {WhiteSpace}+ ("NULL")))?) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
-          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}+ (("ADD") {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType} ({WhiteSpace}* [","] {Identificador} {WhiteSpace}+ {DataType})*) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
-          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}+ (("DROP") {WhiteSpace}+ (("CONSTRAINT")|("COLUMN")) {WhiteSpace}+ {Identificador} ((({WhiteSpace}* [","] {WhiteSpace}* ("CONSTRAINT") {WhiteSpace}+ {Identificador}) | ({WhiteSpace}* [","] {WhiteSpace}* ("COLUMN") {WhiteSpace}+ {Identificador}))*)) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
-          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}+ (("MODIFY") ({WhiteSpace}+ ("COLUMN"))? {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+AlterTable = (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ (("ALTER") {WhiteSpace}+ ("COLUMN") {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType} ({WhiteSpace}+ ("COLLATE") {WhiteSpace}+ {Identificador})? ({WhiteSpace}+ (("NULL")|("NOT") {WhiteSpace}+ ("NULL")))?) {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
+          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ (("ADD") {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType} ({WhiteSpace}* [","] {Identificador} {WhiteSpace}+ {DataType})*) {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
+          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ (("DROP") {WhiteSpace}+ (("CONSTRAINT")|("COLUMN")) {WhiteSpace}+ {Identificador} ((({WhiteSpace}* [","] {WhiteSpace}* ("CONSTRAINT") {WhiteSpace}+ {Identificador}) | ({WhiteSpace}* [","] {WhiteSpace}* ("COLUMN") {WhiteSpace}+ {Identificador}))*)) {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
+          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ (("MODIFY") ({WhiteSpace}+ ("COLUMN"))? {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
+          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}+ (("ALTER") {WhiteSpace}+ ("COLUMN") {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType} ({WhiteSpace}+ ("COLLATE") {WhiteSpace}+ {Identificador})? ({WhiteSpace}+ (("NULL")|("NOT") {WhiteSpace}+ ("NULL")))?) {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
+          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}+ (("ADD") {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType} ({WhiteSpace}* [","] {Identificador} {WhiteSpace}+ {DataType})*) {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
+          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}+ (("DROP") {WhiteSpace}+ (("CONSTRAINT")|("COLUMN")) {WhiteSpace}+ {Identificador} ((({WhiteSpace}* [","] {WhiteSpace}* ("CONSTRAINT") {WhiteSpace}+ {Identificador}) | ({WhiteSpace}* [","] {WhiteSpace}* ("COLUMN") {WhiteSpace}+ {Identificador}))*)) {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
+          |  (("ALTER") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}+ (("MODIFY") ({WhiteSpace}+ ("COLUMN"))? {WhiteSpace}+ {Identificador} {WhiteSpace}+ {DataType}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
 
-AlterUser = (("ALTER") {WhiteSpace}+ ("USER") {WhiteSpace}+ {Identificador} {WhiteSpace}*  [";"] {WhiteSpace}* ("GO")?)
+AlterUser = (("ALTER") {WhiteSpace}+ ("USER") {WhiteSpace}+ {Identificador} {WhiteSpace}*  [";"] {WhiteSpace}* ("GO"))
  
-AlterIndex =  (("ALTER") {WhiteSpace}+ ("INDEX") {WhiteSpace}+ ({Identificador}|("ALL")) {WhiteSpace}+ ("ON") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}*  [";"] {WhiteSpace}* ("GO")?)
+AlterIndex =  (("ALTER") {WhiteSpace}+ ("INDEX") {WhiteSpace}+ ({Identificador}|("ALL")) {WhiteSpace}+ ("ON") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}*  [";"] {WhiteSpace}* ("GO"))
 
-AlterView = (("ALTER") {WhiteSpace}+ ("VIEW") {WhiteSpace}+  ({Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* ["("] {WhiteSpace}* {Identificador} {WhiteSpace}* ({WhiteSpace}* [","] {WhiteSpace}* {Identificador} {WhiteSpace}*)* {WhiteSpace}* [")"] {WhiteSpace}* ("AS") {WhiteSpace}+ {Select} {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
-          | (("ALTER") {WhiteSpace}+ ("VIEW") {WhiteSpace}+  ({Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ ("AS") {WhiteSpace}+ {Select} {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+AlterView = (("ALTER") {WhiteSpace}+ ("VIEW") {WhiteSpace}+  ({Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* ["("] {WhiteSpace}* {Identificador} {WhiteSpace}* ({WhiteSpace}* [","] {WhiteSpace}* {Identificador} {WhiteSpace}*)* {WhiteSpace}* [")"] {WhiteSpace}* ("AS") {WhiteSpace}+ {select} {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
+          | (("ALTER") {WhiteSpace}+ ("VIEW") {WhiteSpace}+  ({Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}+ ("AS") {WhiteSpace}+ {select} {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
 
 /*DROP*/
-DropDatabase = (("DROP") {WhiteSpace}+ ("DATABASE") {WhiteSpace}+ {Identificador} {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
-             | (("DROP") {WhiteSpace}+ ("DATABASE") {WhiteSpace}+ ({Identificador}{WhiteSpace}*[","]{WhiteSpace}*{Identificador}({WhiteSpace}*[","]{WhiteSpace}*{Identificador})*)+ {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+DropDatabase = (("DROP") {WhiteSpace}+ ("DATABASE") {WhiteSpace}+ {Identificador} {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
+             | (("DROP") {WhiteSpace}+ ("DATABASE") {WhiteSpace}+ ({Identificador}{WhiteSpace}*[","]{WhiteSpace}*{Identificador}({WhiteSpace}*[","]{WhiteSpace}*{Identificador})*)+ {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
 
-DropTable =   (("DROP") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
-            | (("DROP") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) ({WhiteSpace}* [","]{WhiteSpace}*({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}))+ {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+DropTable =   (("DROP") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
+            | (("DROP") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) ({WhiteSpace}* [","]{WhiteSpace}*({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}))+ {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
             | (("DROP") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
-            | (("DROP") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador}({WhiteSpace}*[","]{WhiteSpace}*(["#"]|("##")) {Identificador})+ {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+            | (("DROP") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador}({WhiteSpace}*[","]{WhiteSpace}*(["#"]|("##")) {Identificador})+ {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
 
-DropUser = (("DROP") {WhiteSpace}+ ("USER") {WhiteSpace}+ {Identificador} {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+DropUser = (("DROP") {WhiteSpace}+ ("USER") {WhiteSpace}+ {Identificador} {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
 
-DropIndex =   (("DROP") {WhiteSpace}+ ("INDEX") {WhiteSpace}+ {Identificador} {WhiteSpace}+ ("ON") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
-            | (("DROP") {WhiteSpace}+ ("INDEX") {WhiteSpace}+ {Identificador} {WhiteSpace}+ ("ON") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) ({WhiteSpace}* [","] {WhiteSpace}* {Identificador} {WhiteSpace}+ ("ON") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}))* {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+DropIndex =   (("DROP") {WhiteSpace}+ ("INDEX") {WhiteSpace}+ {Identificador} {WhiteSpace}+ ("ON") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
+            | (("DROP") {WhiteSpace}+ ("INDEX") {WhiteSpace}+ {Identificador} {WhiteSpace}+ ("ON") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) ({WhiteSpace}* [","] {WhiteSpace}* {Identificador} {WhiteSpace}+ ("ON") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}))* {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
             
-DropView =   (("DROP") {WhiteSpace}+ ("VIEW") {WhiteSpace}+ ({Identificador}"."{Identificador}|{Identificador}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
-           | (("DROP") {WhiteSpace}+ ("VIEW") {WhiteSpace}+ ({Identificador}"."{Identificador}|{Identificador})({WhiteSpace}* [","] {WhiteSpace}* ({Identificador}"."{Identificador}|{Identificador}))* {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
+DropView =   (("DROP") {WhiteSpace}+ ("VIEW") {WhiteSpace}+ ({Identificador}"."{Identificador}|{Identificador}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
+           | (("DROP") {WhiteSpace}+ ("VIEW") {WhiteSpace}+ ({Identificador}"."{Identificador}|{Identificador})({WhiteSpace}* [","] {WhiteSpace}* ({Identificador}"."{Identificador}|{Identificador}))* {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
 
 /*TRUNCATE*/
-TruncateTable =   (("TRUNCATE") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)
-                | (("TRUNCATE") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}* [";"] {WhiteSpace}* ("GO")?)  
+TruncateTable =   (("TRUNCATE") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ ({Identificador}"."{Identificador}"."{Identificador} | {Identificador}"."{Identificador} | {Identificador}) {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))
+                | (("TRUNCATE") {WhiteSpace}+ ("TABLE") {WhiteSpace}+ (["#"]|("##")) {Identificador} {WhiteSpace}* [";"] {WhiteSpace}* ("GO"))  
 
  
 /*Variables*/
@@ -722,7 +764,54 @@ while { if(OperadoresLista.contains(yytext())){
         return String; 
       }
 }
-
+{Insert} { getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
+        toString=yytext();  
+        return Insert; 
+      }
+{Update} { getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
+        toString=yytext();  
+        return Update; 
+      }
+{Delete} { getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
+        toString=yytext();  
+        return Delete; 
+      }
+{CreateDatabase} { getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
+        toString=yytext();  
+        return Create; 
+      }
+{CreateTable} { getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
+        toString=yytext();  
+        return Create; 
+      }
+{CreateUser} { getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
+        toString=yytext();  
+        return Create; 
+      }
+{CreateIndex} { getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
+        toString=yytext();  
+        return Create; 
+      }
+{CreateView} { getLinea=yyline+1;
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
+        toString=yytext();  
+        return Create; 
+      }
 {AlterDatabase} { getLinea=yyline+1;
         getColumnaInicial=yycolumn+1;
         getColumnaFinal=(yycolumn+1)+yytext().length()-1;
