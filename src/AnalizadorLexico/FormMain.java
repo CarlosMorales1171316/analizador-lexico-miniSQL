@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -27,9 +28,19 @@ import javax.swing.table.DefaultTableModel;
  */
 public class FormMain extends javax.swing.JFrame {
 
-    /**
-     * Creates new form FormMain
-     */
+        public ArrayList<String> CorrectasLista = new ArrayList<>();
+        public ArrayList<String> LineasLista = new ArrayList<>();        
+        public ArrayList<String> ListaSintactica = new ArrayList<>();        
+        public ArrayList<String> listaOperador = new ArrayList<>();
+        public ArrayList<String> listaIdentificador = new ArrayList<>();
+        public ArrayList<String> listaReservada = new ArrayList<>();
+        public ArrayList<String> listaBit = new ArrayList<>();
+        public ArrayList<String> listaInt = new ArrayList<>();
+        public ArrayList<String> listaFloat = new ArrayList<>();
+        public ArrayList<String> listaString = new ArrayList<>();
+        public ArrayList<String> Sentencias = new ArrayList<>();
+    
+        ArrayList<String> imprimirSintactico = new ArrayList<>();
     public FormMain() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -112,7 +123,7 @@ public class FormMain extends javax.swing.JFrame {
 
             },
             new String [] {
-                "# Linea", "# Columna Inicial", "# Columna Final", "Palabra Analizada", "Token"
+                "Linea de Error", "Sentencia Error", "Sentencia Analizada"
             }
         ));
         jScrollPane3.setViewportView(tblSintactico);
@@ -164,82 +175,148 @@ public class FormMain extends javax.swing.JFrame {
         final String path2 = "/src/AnalizadorLexico/";
 
         String ruta = path+path2+"Lexer.flex";
+        String ruta2 = path+path2+"SintacticoLexer.flex";
         generarLexema(ruta);
+        generarLexema(ruta2);
         System.exit(0);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void btnAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarActionPerformed
-        // TODO add your handling code here:
+                    
+        try
+            
+        {
+                   JFileChooser chooser = new JFileChooser();
+                  chooser.showOpenDialog(null); 
+                   Reader reader = new BufferedReader (new FileReader(chooser.getSelectedFile()));                   
+                   File file = chooser.getSelectedFile();
+                   String RutaSalida = file.getAbsolutePath();  
+                                                                                        
+                   Reader reader2 = new BufferedReader (new FileReader(RutaSalida));                   
+                   AnalizadorLexico(reader);
+                      try 
+                      {
+            SintacticoLexer SintactAnalizer = new SintacticoLexer(reader2);   
+            while(true){
+                Tokens tokens = SintactAnalizer.yylex();
+                if (tokens == null) {
+                    AnalizadorSintactico(Sentencias);                                                                        
+                   // Files.write(file, contenidoLista, StandardCharsets.UTF_8);
+                    return;
+                }
+                switch (tokens){
+                    case ErrorSentencia:
+                    ListaSintactica.add(SintactAnalizer.getString);
+                    LineasLista.add("Error en linea: " + SintactAnalizer.getLinea);
+                    break;
+                }
+            }           
+        }
+         catch(IOException e){   
+        }           
+                                                
+        }
+        
+        catch(Exception e)
+        {
+            
+        }
+        
 
-        final String path = System.getProperty("user.dir");
-        final String path2 = "/src/AnalizadorLexico/";
+    }//GEN-LAST:event_btnAnalizarActionPerformed
 
-        JFileChooser chooser = new JFileChooser();
-        chooser.showOpenDialog(null);
-
-        String NombreArchivoEntrada ="";
-
-        NombreArchivoEntrada = chooser.getSelectedFile().getName();
-        String [] split = NombreArchivoEntrada.split("\\.");
-        NombreArchivoEntrada=split[0];
-
-        DefaultTableModel tablaLexico = (DefaultTableModel) tblLexico.getModel();
+    public void AnalizadorSintactico(ArrayList<String> Sentencias){
+        int i=0;
         DefaultTableModel tablaSintactico = (DefaultTableModel) tblSintactico.getModel();
+        for(String tempo:ListaSintactica){
+            
+            if(!Sentencias.contains(tempo)){
+                if(tempo.startsWith("SELECT")){                
+                String[] ErrorSintactico = {LineasLista.get(i),"SELECT",ListaSintactica.get(i)};
+                   tablaSintactico.addRow(ErrorSintactico);                                                             
+                }
+                if(tempo.startsWith("INSERT")){               
+                String[] ErrorSintactico = {LineasLista.get(i),"TRUNCATE",ListaSintactica.get(i)};
+                   tablaSintactico.addRow(ErrorSintactico);                                                             
+                } 
+                if(tempo.startsWith("UPDATE")){               
+                String[] ErrorSintactico = {LineasLista.get(i),"UPDATE",ListaSintactica.get(i)};
+                tablaSintactico.addRow(ErrorSintactico);                                                             
+                }
+                if(tempo.startsWith("DELETE")){                
+                String[] ErrorSintactico = {LineasLista.get(i),"DELETE",ListaSintactica.get(i)};
+                   tablaSintactico.addRow(ErrorSintactico);                                                             
+                }
+                if(tempo.startsWith("CREATE")){                
+                String[] ErrorSintactico = {LineasLista.get(i),"CREATE",ListaSintactica.get(i)};
+                   tablaSintactico.addRow(ErrorSintactico);                                                             
+                }
+                if(tempo.startsWith("ALTER")){                
+                String[] ErrorSintactico = {LineasLista.get(i),"ALTER",ListaSintactica.get(i)};
+                   tablaSintactico.addRow(ErrorSintactico);                                                             
+                }
+                if(tempo.startsWith("DROP")){                
+                String[] ErrorSintactico = {LineasLista.get(i),"DROP",ListaSintactica.get(i)};
+                   tablaSintactico.addRow(ErrorSintactico);                                                             
+                }
+                if(tempo.startsWith("TRUNCATE")){                
+                   String[] ErrorSintactico = {LineasLista.get(i),"TRUNCATE",ListaSintactica.get(i)};
+                   tablaSintactico.addRow(ErrorSintactico);                                                             
+                }   
+            }
+            i++;
+        }                 
+    }
+        
+     public void AnalizadorLexico(Reader reader) throws IOException
+    {
+           Lexer lexer = new Lexer(reader);
+           DefaultTableModel tablaLexico = (DefaultTableModel) tblLexico.getModel();           
+           ArrayList<String>contenidoLista = new ArrayList<>();
 
-        //Listas con repetición
-        ArrayList<String> listaOperador = new ArrayList<>();
-        ArrayList<String> listaIdentificador = new ArrayList<>();
-        ArrayList<String> listaReservada = new ArrayList<>();
-        ArrayList<String> listaBit = new ArrayList<>();
-        ArrayList<String> listaInt = new ArrayList<>();
-        ArrayList<String> listaFloat = new ArrayList<>();
-        ArrayList<String> listaString = new ArrayList<>();
-
-        try {
-            Reader reader = new BufferedReader (new FileReader(chooser.getSelectedFile()));
-            Lexer lexer = new Lexer(reader);
-
-            ArrayList<String>contenidoLista = new ArrayList<>();
-            Path file = Paths.get(path+path2+NombreArchivoEntrada+".out");
-
-            while (true) {
+           
+        while (true) {
+            
                 Tokens tokens = lexer.yylex();
 
                 if (tokens == null) {
-                    Files.write(file, contenidoLista, StandardCharsets.UTF_8);
-                    return;
+                   // Files.write(file, contenidoLista, StandardCharsets.UTF_8);                            
+                   break;
                 }
                 switch (tokens) {
+                    case Select:
+                    String [] dato1_1 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
+                    Sentencias.add(lexer.toString);                    
+                    break;
                     case Insert:
                     String [] dato1_2 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
-                    tablaSintactico.addRow(dato1_2);
+                    Sentencias.add(lexer.toString);                   
                     break;
                     case Update:
                     String [] dato1_3 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
-                    tablaSintactico.addRow(dato1_3);
+                    Sentencias.add(lexer.toString);                    
                     break;
                     case Delete:
                     String [] dato1_4 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
-                    tablaSintactico.addRow(dato1_4);
+                    Sentencias.add(lexer.toString);                    
                     break;
                     case Create:
                     String [] dato2_1 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
-                    tablaSintactico.addRow(dato2_1);
+                    Sentencias.add(lexer.toString);                    
                     break;
                     case Alter:
                     String [] dato2_2 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
-                    tablaSintactico.addRow(dato2_2);
+                    Sentencias.add(lexer.toString);                    
                     break;
                     case Drop:
                     String [] dato2_3 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
-                    tablaSintactico.addRow(dato2_3);
+                    Sentencias.add(lexer.toString);                    
                     break;
                     case Truncate:
                     String [] dato2_4 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,tokens.toString()};
-                    tablaSintactico.addRow(dato2_4);
+                    Sentencias.add(lexer.toString);                    
                     break;
-                    
-                    
+                                       
                     case Error_Caracter_Invalido:
                     String [] fila1 = {lexer.getLinea.toString(),lexer.getColumnaInicial.toString(),lexer.getColumnaFinal.toString(),lexer.toString,"Carácter Inválido"};
                     tablaLexico.addRow(fila1);
@@ -475,16 +552,10 @@ public class FormMain extends javax.swing.JFrame {
                     default:
                     break;
                 }
-            }
-
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(FormMain.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(FormMain.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnAnalizarActionPerformed
-
-   
+                
+            }                     
+                  
+    }
     
     public static void generarLexema(String ruta){
         File file = new File (ruta);

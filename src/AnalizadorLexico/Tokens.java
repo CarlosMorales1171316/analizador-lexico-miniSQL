@@ -20,11 +20,13 @@ public enum Tokens {
     Error_Caracter_Invalido,
     Error_Cadena_Invalida,
     Error_Comentario_Sin_Cerrar,
+    Select,
     Insert,
     Update,
     Delete,
     Create,
     Alter,
     Drop,
-    Truncate
+    Truncate,
+    ErrorSentencia
 }
