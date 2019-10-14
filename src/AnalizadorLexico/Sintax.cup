@@ -1,0 +1,31 @@
+package AnalizadorLexico;
+import java_cup.runtime.Symbol;
+
+parser code 
+{:
+    private Symbol s;
+
+    public void syntax_error(Symbol s) {
+        this.s = s;
+    }
+
+    public Symbol getS(){
+        return this.s;
+    }
+:};
+
+terminal Identificador, Int, Float, Bit, String,
+         TRUNCATE, TABLE, GO,
+         Suma, Resta, Multiplicacion, Division, Porcentaje, Menor, Menor_o_igual, Mayor, Mayor_o_igual, Igual, Igualdad, Diferente, And, Or, Not, Punto_y_coma, Coma, Punto, Corchete_de_apertura, Corchete_de_cierre, Corchetes, Parentesis_de_apertura, Parentesis_de_cierre, Parentesis, Llave_de_apertura, Llave_de_cierre, Llaves, Arroba, Numeral, Doble_numeral,
+         Error_Comentario_Sin_Cerrar, Error_Cadena_Invalida, Error_Caracter_Invalido;
+non terminal INICIO, SENTENCIA, SENTENCIATRUNCATE, OBJECT;
+
+start with INICIO;
+INICIO ::=  SENTENCIA
+; 
+SENTENCIA ::= SENTENCIA SENTENCIATRUNCATE | SENTENCIATRUNCATE
+;
+SENTENCIATRUNCATE ::= TRUNCATE TABLE OBJECT Punto_y_coma | TRUNCATE TABLE OBJECT GO | TRUNCATE TABLE OBJECT Punto_y_coma GO 
+;
+OBJECT ::= Identificador | Identificador Punto Identificador | Identificador Punto Identificador Punto Identificador
+;
