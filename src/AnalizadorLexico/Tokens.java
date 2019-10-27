@@ -11,7 +11,8 @@ package AnalizadorLexico;
  */
 public enum Tokens {
 ADD ,
-EXTERNAL ,      
+EXTERNAL , 
+NAME ,
 PROCEDURE ,      
 ALL  ,    
 FETCH ,      
@@ -493,6 +494,7 @@ REGR_SXY ,
 HOLD ,     
 REGR_SYY ,
     Identificador,
+    Digito,
     Bit,
     Int,
     Float,

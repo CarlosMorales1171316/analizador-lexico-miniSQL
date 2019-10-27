@@ -65,7 +65,159 @@ TABLE {
 GO { 
         return new Symbol(sym.GO ,yychar, yyline, yytext());  
       }   
-
+DROP { 
+        return new Symbol(sym.DROP ,yychar, yyline, yytext()); 
+      } 
+DATABASE { 
+        return new Symbol(sym.DATABASE ,yychar, yyline, yytext());  
+      }  
+INDEX { 
+        return new Symbol(sym.INDEX ,yychar, yyline, yytext());  
+      }
+VIEW { 
+        return new Symbol(sym.VIEW ,yychar, yyline, yytext());  
+      } 
+USER { 
+        return new Symbol(sym.USER ,yychar, yyline, yytext()); 
+      } 
+IF { 
+        return new Symbol(sym.IF ,yychar, yyline, yytext());  
+      } 
+EXISTS { 
+        return new Symbol(sym.EXISTS ,yychar, yyline, yytext());  
+      }   
+ON { 
+        return new Symbol(sym.ON ,yychar, yyline, yytext());  
+      }  
+ALTER { 
+        return new Symbol(sym.ALTER ,yychar, yyline, yytext()); 
+      }
+CURRENT { 
+        return new Symbol(sym.CURRENT ,yychar, yyline, yytext());  
+      } 
+COLLATE { 
+        return new Symbol(sym.COLLATE ,yychar, yyline, yytext());  
+      } 
+MODIFY { 
+        return new Symbol(sym.MODIFY ,yychar, yyline, yytext()); 
+      } 
+NAME { 
+        return new Symbol(sym.NAME ,yychar, yyline, yytext()); 
+      } 
+COLUMN { 
+        return new Symbol(sym.COLUMN ,yychar, yyline, yytext());  
+      } 
+NULL { 
+        return new Symbol(sym.NULL ,yychar, yyline, yytext());  
+      }
+NOT { 
+        return new Symbol(sym.NOT ,yychar, yyline, yytext());  
+      }
+ALL  { 
+        return new Symbol(sym.ALL ,yychar, yyline, yytext()); 
+      } 
+AS { 
+        return new Symbol(sym.AS ,yychar, yyline, yytext()); 
+      }
+CHAR { 
+        return new Symbol(sym.CHAR ,yychar, yyline, yytext()); 
+      } 
+BINARY { 
+        return new Symbol(sym.BINARY ,yychar, yyline, yytext()); 
+      }
+BLOB { 
+        return new Symbol(sym.BLOB ,yychar, yyline, yytext()); 
+      }
+BIT { 
+        return new Symbol(sym.BIT ,yychar, yyline, yytext()); 
+      }
+SMALLINT { 
+        return new Symbol(sym.SMALLINT ,yychar, yyline, yytext()); 
+      }
+INT { 
+        return new Symbol(sym.INT ,yychar, yyline, yytext()); 
+      }
+INTEGER { 
+        return new Symbol(sym.INTEGER ,yychar, yyline, yytext()); 
+      }
+FLOAT { 
+        return new Symbol(sym.FLOAT ,yychar, yyline, yytext()); 
+      }
+VARCHAR { 
+        return new Symbol(sym.VARCHAR ,yychar, yyline, yytext()); 
+      }
+BOOLEAN { 
+        return new Symbol(sym.BOOLEAN ,yychar, yyline, yytext()); 
+      }
+DATE { 
+        return new Symbol(sym.DATE ,yychar, yyline, yytext()); 
+      }
+YEAR { 
+        return new Symbol(sym.YEAR ,yychar, yyline, yytext()); 
+      }
+IMAGE { 
+        return new Symbol(sym.IMAGE ,yychar, yyline, yytext()); 
+      }
+REAL { 
+        return new Symbol(sym.REAL ,yychar, yyline, yytext()); 
+      }
+TIME { 
+        return new Symbol(sym.TIME ,yychar, yyline, yytext()); 
+      }
+TIMESTAMP { 
+        return new Symbol(sym.TIMESTAMP ,yychar, yyline, yytext()); 
+      }
+CURSOR { 
+        return new Symbol(sym.CURSOR ,yychar, yyline, yytext()); 
+      }
+TABLE { 
+        return new Symbol(sym.TABLE ,yychar, yyline, yytext()); 
+      }
+TEXT { 
+        return new Symbol(sym.TEXT ,yychar, yyline, yytext()); 
+      }
+BYTE { 
+        return new Symbol(sym.BYTE ,yychar, yyline, yytext()); 
+      }
+LONG { 
+        return new Symbol(sym.LONG ,yychar, yyline, yytext()); 
+      }
+DOUBLE { 
+        return new Symbol(sym.DOUBLE ,yychar, yyline, yytext()); 
+      }
+NCHAR { 
+        return new Symbol(sym.NCHAR ,yychar, yyline, yytext()); 
+      }
+ADD { 
+        return new Symbol(sym.ADD ,yychar, yyline, yytext()); 
+      }
+CONSTRAINT { 
+        return new Symbol(sym.CONSTRAINT ,yychar, yyline, yytext()); 
+      }
+UNIQUE { 
+        return new Symbol(sym.UNIQUE ,yychar, yyline, yytext()); 
+      }
+PRIMARY { 
+        return new Symbol(sym.PRIMARY ,yychar, yyline, yytext()); 
+      }
+KEY { 
+        return new Symbol(sym.KEY ,yychar, yyline, yytext()); 
+      }
+IDENTITY { 
+        return new Symbol(sym.IDENTITY ,yychar, yyline, yytext()); 
+      }
+CLUSTERED { 
+        return new Symbol(sym.CLUSTERED ,yychar, yyline, yytext()); 
+      }
+NONCLUSTERED { 
+        return new Symbol(sym.NONCLUSTERED ,yychar, yyline, yytext()); 
+      }
+COLUMN { 
+        return new Symbol(sym.COLUMN ,yychar, yyline, yytext()); 
+      }
+FOREIGN  { 
+        return new Symbol(sym.FOREIGN  ,yychar, yyline, yytext()); 
+      }
  
 {WhiteSpace} {/*Ignore*/}
 {Comment} {/*Ignore*/}
@@ -164,7 +316,9 @@ GO {
 {Identificador} { 
         return new Symbol(sym.Identificador ,yychar, yyline, yytext()); 
       }
-
+{Digito} { 
+        return new Symbol(sym.Digito ,yychar, yyline, yytext()); 
+      }
 {Bit} { 
         return new Symbol(sym.Bit ,yychar, yyline, yytext()); 
       }

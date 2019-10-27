@@ -72,6 +72,13 @@ PROCEDURE {
         toString=yytext(); 
         return PROCEDURE; 
       }      
+NAME { 
+        getLinea=yyline+1; 
+        getColumnaInicial=yycolumn+1;
+        getColumnaFinal=(yycolumn+1)+yytext().length()-1;
+        toString=yytext(); 
+        return NAME; 
+      }
 ALL  { 
         getLinea=yyline+1; 
         getColumnaInicial=yycolumn+1;
