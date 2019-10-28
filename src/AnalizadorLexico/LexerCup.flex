@@ -216,9 +216,128 @@ COLUMN {
         return new Symbol(sym.COLUMN ,yychar, yyline, yytext()); 
       }
 FOREIGN  { 
-        return new Symbol(sym.FOREIGN  ,yychar, yyline, yytext()); 
+        return new Symbol(sym.FOREIGN ,yychar, yyline, yytext()); 
       }
- 
+DELETE  { 
+        return new Symbol(sym.DELETE ,yychar, yyline, yytext()); 
+      }
+TOP  { 
+        return new Symbol(sym.TOP ,yychar, yyline, yytext()); 
+      }
+PERCENT  { 
+        return new Symbol(sym.PERCENT ,yychar, yyline, yytext()); 
+      }
+FROM  { 
+        return new Symbol(sym.FROM ,yychar, yyline, yytext()); 
+      }
+OUTPUT { 
+        return new Symbol(sym.OUTPUT ,yychar, yyline, yytext()); 
+      }
+WHERE { 
+        return new Symbol(sym.WHERE ,yychar, yyline, yytext()); 
+      }
+AND { 
+        return new Symbol(sym.AND ,yychar, yyline, yytext()); 
+      }
+NOT { 
+        return new Symbol(sym.NOT ,yychar, yyline, yytext()); 
+      }
+OR { 
+        return new Symbol(sym.OR ,yychar, yyline, yytext()); 
+      }
+LIKE { 
+        return new Symbol(sym.LIKE ,yychar, yyline, yytext()); 
+      }
+BETWEEN { 
+        return new Symbol(sym.BETWEEN ,yychar, yyline, yytext()); 
+      }
+IS { 
+        return new Symbol(sym.IS ,yychar, yyline, yytext()); 
+      }
+ESCAPE { 
+        return new Symbol(sym.ESCAPE ,yychar, yyline, yytext()); 
+      }
+CROSS { 
+        return new Symbol(sym.CROSS ,yychar, yyline, yytext()); 
+      }
+JOIN { 
+        return new Symbol(sym.JOIN ,yychar, yyline, yytext()); 
+      }
+INNER { 
+        return new Symbol(sym.INNER ,yychar, yyline, yytext()); 
+      }
+LEFT { 
+        return new Symbol(sym.LEFT ,yychar, yyline, yytext()); 
+      }
+RIGHT { 
+        return new Symbol(sym.RIGHT ,yychar, yyline, yytext()); 
+      }
+OUTER { 
+        return new Symbol(sym.OUTER ,yychar, yyline, yytext()); 
+      }
+FULL { 
+        return new Symbol(sym.FULL ,yychar, yyline, yytext()); 
+      }
+PIVOT { 
+        return new Symbol(sym.PIVOT ,yychar, yyline, yytext()); 
+      }
+INTO { 
+        return new Symbol(sym.INTO ,yychar, yyline, yytext()); 
+      }
+INSERT { 
+        return new Symbol(sym.INSERT ,yychar, yyline, yytext()); 
+      }
+UPDATE { 
+        return new Symbol(sym.UPDATE ,yychar, yyline, yytext()); 
+      }
+CREATE { 
+        return new Symbol(sym.CREATE ,yychar, yyline, yytext()); 
+      }
+FILE { 
+        return new Symbol(sym.FILE ,yychar, yyline, yytext()); 
+      }
+SIZE { 
+        return new Symbol(sym.SIZE ,yychar, yyline, yytext()); 
+      }
+ASC { 
+        return new Symbol(sym.ASC ,yychar, yyline, yytext()); 
+      }
+DESC { 
+        return new Symbol(sym.DESC ,yychar, yyline, yytext()); 
+      }
+INCLUDE { 
+        return new Symbol(sym.INCLUDE ,yychar, yyline, yytext()); 
+      }
+IN { 
+        return new Symbol(sym.IN ,yychar, yyline, yytext()); 
+      }
+DEFAULT { 
+        return new Symbol(sym.DEFAULT ,yychar, yyline, yytext()); 
+      }
+REFERENCES { 
+        return new Symbol(sym.REFERENCES ,yychar, yyline, yytext()); 
+      }
+FOR { 
+        return new Symbol(sym.FOR ,yychar, yyline, yytext()); 
+      }
+REPLICATION { 
+        return new Symbol(sym.REPLICATION ,yychar, yyline, yytext()); 
+      }
+CHECK { 
+        return new Symbol(sym.CHECK ,yychar, yyline, yytext()); 
+      }
+NO { 
+        return new Symbol(sym.NO ,yychar, yyline, yytext()); 
+      }
+ACTION { 
+        return new Symbol(sym.ACTION ,yychar, yyline, yytext()); 
+      }
+CASCADE { 
+        return new Symbol(sym.CASCADE ,yychar, yyline, yytext()); 
+      }
+ SET { 
+        return new Symbol(sym.SET ,yychar, yyline, yytext()); 
+      }
 {WhiteSpace} {/*Ignore*/}
 {Comment} {/*Ignore*/}
 
