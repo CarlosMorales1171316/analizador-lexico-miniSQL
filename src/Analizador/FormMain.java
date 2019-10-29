@@ -72,13 +72,13 @@ public class FormMain extends javax.swing.JFrame {
                 btnAnalizarActionPerformed(evt);
             }
         });
-        getContentPane().add(btnAnalizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 640, 110, 340));
+        getContentPane().add(btnAnalizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 650, 110, 340));
 
         txtResultado.setColumns(20);
         txtResultado.setRows(5);
         jScrollPane1.setViewportView(txtResultado);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 640, 1050, 340));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 650, 930, 340));
 
         jButton1.setBackground(new java.awt.Color(255, 153, 0));
         jButton1.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
@@ -88,7 +88,7 @@ public class FormMain extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 140, 280, 50));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 140, 280, 50));
 
         tblScanner.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -100,7 +100,7 @@ public class FormMain extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(tblScanner);
 
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 200, 1040, 330));
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 200, 930, 330));
 
         btnAnalizarSintactico.setBackground(new java.awt.Color(255, 153, 0));
         btnAnalizarSintactico.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -110,7 +110,7 @@ public class FormMain extends javax.swing.JFrame {
                 btnAnalizarSintacticoActionPerformed(evt);
             }
         });
-        getContentPane().add(btnAnalizarSintactico, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 200, 110, 330));
+        getContentPane().add(btnAnalizarSintactico, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 200, 110, 330));
 
         jPanel2.setBackground(new java.awt.Color(102, 0, 0));
 
@@ -122,20 +122,20 @@ public class FormMain extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(379, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(302, 302, 302)
                 .addComponent(jLabel1)
-                .addGap(375, 375, 375))
+                .addContainerGap(332, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(33, 33, 33)
+                .addGap(30, 30, 30)
                 .addComponent(jLabel1)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(-2, 10, 1180, 120));
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(-2, 10, 1060, 120));
 
         jPanel4.setBackground(new java.awt.Color(102, 0, 0));
 
@@ -147,20 +147,20 @@ public class FormMain extends javax.swing.JFrame {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(330, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(261, 261, 261)
                 .addComponent(jLabel3)
-                .addGap(324, 324, 324))
+                .addContainerGap(273, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(21, 21, 21)
                 .addComponent(jLabel3)
                 .addContainerGap(27, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 540, 1180, 90));
+        getContentPane().add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 540, 1060, 100));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
