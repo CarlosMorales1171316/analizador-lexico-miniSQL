@@ -1,7 +1,6 @@
 package Analizador;
 import java_cup.runtime.Symbol;
 
-/* Sección de declaraciones de JFlex */
 %%
 %class LexerCup
 %type java_cup.runtime.Symbol
@@ -10,7 +9,7 @@ import java_cup.runtime.Symbol;
 %line
 %char
 
-/* Inicio de Expresiones regulares */
+/*DICCIONARIOS*/
 L=[a-zA-Z]+
 D=[0-9]+
 Digito = [0-9]
@@ -29,8 +28,7 @@ Salto = \r| \n| \r\n
 EspacioE = [ \t]
 Empty = {Salto} | {EspacioE}
 
-/* Finaliza expresiones regulares */
-
+/*METODOS*/
 %{
     private Symbol symbol(int type, Object value){   
         return new Symbol(type, yyline, yycolumn, value);
@@ -42,11 +40,7 @@ Empty = {Salto} | {EspacioE}
 %}
 
 %%
-/* Finaliza la sección de declaraciones de JFlex */
-
-/* Inicia sección de reglas */
-
-/*PALABRAS RESERVADAS*/
+/*RESERVADAS*/
 "ADD" {return new Symbol (sym.ADD, yychar, yyline, yytext());}
 "EXTERNAL" {return new Symbol (sym.EXTERNAL,yychar,yyline, yytext());}
 "FETCH" {return new Symbol (sym.FETCH,yychar,yyline, yytext());}
@@ -396,7 +390,7 @@ Empty = {Salto} | {EspacioE}
 "EXECUTE_AS_CLAUSE" {return new Symbol (sym.EXECUTE_AS_CLAUSE,yychar,yyline, yytext());}
 ";"{Empty}*"GO" {return new Symbol (sym.PYCGO,yychar,yyline, yytext());}
 
-/*ESPACIOS*/
+/*WHITESPACE*/
 {Espacio}+ {/*Ignore*/}
 
 /*COMENTARIOS*/
@@ -406,119 +400,49 @@ Empty = {Salto} | {EspacioE}
 ("/*"[^\r\n.*]*) {return new Symbol(sym.ComentarioE, yychar, yyline, yytext());}
 //("/*"([^*/])*) {return new Symbol(sym.ComentarioE, yychar, yyline, yytext());}
 
-/*VARIABLE TIPO INT*/
+/*CONSTANTES*/
 ({Numero}) {return new Symbol(sym.Int, yychar, yyline, yytext());}
 ("-"{Numero})|("+"{Numero}) {return new Symbol(sym.Int, yychar, yyline, yytext());}
-
-/*VARIABLE TIPO BIT*/
 (0|1|NULL) {return new Symbol(sym.Bit, yychar, yyline, yytext());}
-
-/*VARIABLE TIPO STRING*/
 ("'"([^'\r\n])*"'") {return new Symbol(sym.String, yychar, yyline, yytext());}
 ("'") {return new Symbol(sym.ERROR, yychar, yyline, yytext());}
 ("'"([^'\r\n]*)) {return new Symbol(sym.StringE, yychar, yyline, yytext());}
-
-/*VARIABLE TIPO FLOAT*/
 ({Numero}+"."{Numero}*) {return new Symbol(sym.Float, yychar, yyline, yytext());}
 ({Numero}+"."{Numero}*(E|e)?("+"|"-")?{Numero}?) {return new Symbol(sym.Float, yychar, yyline, yytext());}
 
-/*SIMBOLO IGUAL*/
+/*OPERADORES*/
 "=" {return new Symbol(sym.Igual, yychar, yyline, yytext());}
-
-/*SUMA*/
 ("+") {return new Symbol(sym.Suma, yychar, yyline, yytext());}
-
-/*RESTA*/
 "-" {return new Symbol(sym.Resta, yychar, yyline, yytext());}
-
-/*MULTIPLICACION*/
 "*" {return new Symbol(sym.Multiplicacion, yychar, yyline, yytext());}
-
-/*DIVISION*/
 "/" {return new Symbol(sym.Division, yychar, yyline, yytext());}
-
-/*SIMBOLO PORCENTAJE*/
 "%" {return new Symbol(sym.Porcentaje, yychar, yyline, yytext());}
-
-/*SIMBOLO MENOR QUE*/
 "<" {return new Symbol(sym.Menor_que, yychar, yyline, yytext());}
-
-/*SIMBOLO MENOR O IGUAL QUE*/
 "<=" {return new Symbol(sym.Menor_o_igual_que, yychar, yyline, yytext());}
-
-/*SIMBOLO MAYOR QUE*/
 ">" {return new Symbol(sym.Mayor_que, yychar, yyline, yytext());}
-
-/*SIMBOLO MAYOR O IGUAL QUE*/
 ">=" {return new Symbol(sym.Mayor_o_igual_que, yychar, yyline, yytext());}
-
-/*DOBLE ASIGNACION*/
 "==" {return new Symbol(sym.Operador_de_Igualdad, yychar, yyline, yytext());}
-
-/*SIMBOLO NO ES IGUAL*/
 "!=" {return new Symbol(sym.Operador_no_igual, yychar, yyline, yytext());}
-
-/*AND*/
 "&&" {return new Symbol(sym.Operador_AND, yychar, yyline, yytext());}
-
-/*OR*/
 "||" {return new Symbol(sym.Operador_OR, yychar, yyline, yytext());}
-
-/*SIGNO DE EXCLAMACIÓN*/
 "!" {return new Symbol(sym.Signo_de_Exclamación, yychar, yyline, yytext());}
-
-/*SIGNO DE INTERROGACION*/
 "?" {return new Symbol(sym.Cierre_signo_de_Interrogacion, yychar, yyline, yytext());}
-
-/*SIGNO DE INTERROGACION*/
 "¿" {return new Symbol(sym.Apertura_signo_de_Interrogacion, yychar, yyline, yytext());}
-
-/*PUNTO Y COMA*/
 ";" {return new Symbol(sym.Punto_y_coma, yychar, yyline, yytext());}
-
-/*COMA*/
 (,) {return new Symbol(sym.Coma, yychar, yyline, yytext());}
-
-/*PUNTO*/
 "." {return new Symbol(sym.Punto, yychar, yyline, yytext());}
-
-/*ARROBA*/
 "@" {return new Symbol(sym.Arroba, yychar, yyline, yytext());}
-
-/*NUMERAL*/
 "#" {return new Symbol(sym.Numeral, yychar, yyline, yytext());}
-
-/*DOBLE NUMERAL*/
 "##" {return new Symbol(sym.Doble_Numeral, yychar, yyline, yytext());}
-
-/*CORCHETES*/
 "[]" {return new Symbol(sym.Corchetes, yychar, yyline, yytext());}
-
-/*LLAVES*/
 "{}" {return new Symbol(sym.Llaves, yychar, yyline, yytext());}
-
-/*PARENTESIS*/
 "()" {return new Symbol(sym.Paréntesis, yychar, yyline, yytext());}
-
-/*APERTURA DE CORCHETES*/
 "[" {return new Symbol(sym.Apertura_de_corchetes, yychar, yyline, yytext());}
-
-/*APERTURA DE LLAVES*/
 "{" {return new Symbol(sym.Apertura_de_llaves, yychar, yyline, yytext());}
-
-/*APERTURA DE PARÉNTESIS*/
 "(" {return new Symbol(sym.Apertura_de_paréntesis, yychar, yyline, yytext());}
-
-/*CIERRE DE CORCHETES*/
 "]" {return new Symbol(sym.Cierre_de_corchetes, yychar, yyline, yytext());}
-
-/*CIERRE DE LLAVES*/
 "}" {return new Symbol(sym.Cierre_de_llaves, yychar, yyline, yytext());}
-
-/*CIERRE DE PARÉNTESIS*/
 ")" {return new Symbol(sym.Cierre_de_paréntesis, yychar, yyline, yytext());}
-
-/*SIMBOLO GUION BAJO*/
 "_" {return new Symbol(sym.Guión_bajo, yychar, yyline, yytext());}
 
 /*IDENTIFICADOR*/
@@ -526,5 +450,4 @@ Empty = {Salto} | {EspacioE}
 
 . {return new Symbol(sym.ERROR, yychar, yyline, yytext());}
 
-/* Finaliza Sección de Reglas */
 

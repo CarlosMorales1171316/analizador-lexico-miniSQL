@@ -1,14 +1,13 @@
 package Analizador;
 import static Analizador.Tokens.*;
 
-/* Sección de declaraciones de JFlex */
 %%
 %class ALexico
 %type Tokens
 %line
 %column
 
-/* Inicio de Expresiones regulares */
+/*DICCIONARIOS*/
 L=[a-zA-Z]+
 D=[0-9]+
 Digito = [0-9]
@@ -27,8 +26,7 @@ Salto = \r| \n| \r\n
 EspacioE = [ \t]
 Empty = {Salto} | {EspacioE}
 
-/* Finaliza expresiones regulares */
-
+/*VARIABLES*/
 %{
     public String lexeme;
     public int line;
@@ -37,11 +35,7 @@ Empty = {Salto} | {EspacioE}
 %}
 
 %%
-/* Finaliza la sección de declaraciones de JFlex */
-
-/* Inicia sección de reglas */
-
-/*PALABRAS RESERVADAS*/
+/*RESERVADAS*/
 "ADD" {lexeme = yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength() -1; return ADD;}
 "EXTERNAL" {lexeme = yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength() -1; return EXTERNAL;}
 "FETCH" {lexeme = yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength() -1; return FETCH;}
@@ -391,7 +385,7 @@ Empty = {Salto} | {EspacioE}
 "EXECUTE_AS_CLAUSE" {lexeme = yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength() -1; return EXECUTE_AS_CLAUSE;}
 ";"{Empty}*"GO" {lexeme = yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength() -1; return PYCGO;}
 
-/*ESPACIOS*/
+/*WHITESPACE*/
 {Espacio}+ {/*Ignore*/}
 
 /*COMENTARIOS*/
@@ -401,119 +395,49 @@ Empty = {Salto} | {EspacioE}
 ("/*"[^\r\n.*]*) {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return ComentarioE;}
 //("/*"([^*/])*) {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return ComentarioE;}
 
-/*VARIABLE TIPO BIT*/
+/*CONSTANTES*/
 (0|1|NULL) {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Bit;}
-
-/*VARIABLE TIPO INT*/
 ({Numero}) {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Int;}
 ("-"{Numero})|("+"{Numero}) {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Int;}
-
-/*VARIABLE TIPO STRING*/
 ("'"([^'\r\n])*"'") {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return String;}
 ("'") {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return ERROR;}
 ("'"([^'\r\n]*)) {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return StringE;}
-
-/*VARIABLE TIPO FLOAT*/
 ({Numero}+"."{Numero}*) {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Float;}
 ({Numero}+"."{Numero}*(E|e)?("+"|"-")?{Numero}?) {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Float;}
 
-/*SIMBOLO IGUAL*/
+/*OPERADORES*/
 "=" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Igual;}
-
-/*SUMA*/
 ("+") {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Suma;}
-
-/*RESTA*/
 "-" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Resta;}
-
-/*MULTIPLICACION*/
 "*" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Multiplicacion;}
-
-/*DIVISION*/
 "/" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Division;}
-
-/*SIMBOLO PORCENTAJE*/
 "%" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Porcentaje;}
-
-/*SIMBOLO MENOR QUE*/
 "<" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Menor_que;}
-
-/*SIMBOLO MENOR O IGUAL QUE*/
 "<=" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Menor_o_igual_que;}
-
-/*SIMBOLO MAYOR QUE*/
 ">" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Mayor_que;}
-
-/*SIMBOLO MAYOR O IGUAL QUE*/
 ">=" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Mayor_o_igual_que;}
-
-/*DOBLE ASIGNACION*/
 "==" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Operador_de_Igualdad;}
-
-/*SIMBOLO NO ES IGUAL*/
 "!=" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Operador_no_igual;}
-
-/*AND*/
 "&&" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Operador_AND;}
-
-/*OR*/
 "||" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Operador_OR;}
-
-/*SIGNO DE EXCLAMACIÓN*/
 "!" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Signo_de_Exclamación;}
-
-/*SIGNO DE INTERROGACION*/
 "?" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Cierre_signo_de_Interrogacion;}
-
-/*SIGNO DE INTERROGACION*/
 "¿" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Apertura_signo_de_Interrogacion;}
-
-/*PUNTO Y COMA*/
 ";" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Punto_y_coma;}
-
-/*COMA*/
 (,) {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Coma;}
-
-/*PUNTO*/
 "." {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Punto;}
-
-/*ARROBA*/
 "@" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Arroba;}
-
-/*NUMERAL*/
 "#" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Numeral;}
-
-/*DOBLE NUMERAL*/
 "##" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Doble_Numeral;}
-
-/*CORCHETES*/
 "[]" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Corchetes;}
-
-/*LLAVES*/
 "{}" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Llaves;}
-
-/*PARENTESIS*/
 "()" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Paréntesis;}
-
-/*APERTURA DE CORCHETES*/
 "[" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Apertura_de_corchetes;}
-
-/*APERTURA DE LLAVES*/
 "{" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Apertura_de_llaves;}
-
-/*APERTURA DE PARÉNTESIS*/
 "(" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Apertura_de_paréntesis;}
-
-/*CIERRE DE CORCHETES*/
 "]" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Cierre_de_corchetes;}
-
-/*CIERRE DE LLAVES*/
 "}" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Cierre_de_llaves;}
-
-/*CIERRE DE PARÉNTESIS*/
 ")" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Cierre_de_paréntesis;}
-
-/*SIMBOLO GUION BAJO*/
 "_" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Guión_bajo;}
 
 /*IDENTIFICADOR*/
@@ -521,4 +445,3 @@ Empty = {Salto} | {EspacioE}
 
 . {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return ERROR;}
 
-/* Finaliza Sección de Reglas */

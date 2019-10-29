@@ -9,18 +9,18 @@ package Analizador;
  *
  * @author carlo
  */
-public class TOKEN {
+public class Token {
     
     public String Valor;
     public int Linea;
     public int PI;
 
-    public TOKEN() 
+    public Token() 
     {
         
     }
     
-    public TOKEN(String valor, int linea, int pi) 
+    public Token(String valor, int linea, int pi) 
     {
         Valor = valor;
         Linea = linea;

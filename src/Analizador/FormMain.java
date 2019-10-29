@@ -39,7 +39,7 @@ public class FormMain extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
     }
 
-    public TOKEN Token = new TOKEN();
+    public Token Token = new Token();
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -72,13 +72,13 @@ public class FormMain extends javax.swing.JFrame {
                 btnAnalizarActionPerformed(evt);
             }
         });
-        getContentPane().add(btnAnalizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 650, 110, 340));
+        getContentPane().add(btnAnalizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 610, 110, 340));
 
         txtResultado.setColumns(20);
         txtResultado.setRows(5);
         jScrollPane1.setViewportView(txtResultado);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 650, 930, 340));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 610, 930, 340));
 
         jButton1.setBackground(new java.awt.Color(255, 153, 0));
         jButton1.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
@@ -88,7 +88,7 @@ public class FormMain extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 140, 280, 50));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 120, 280, 50));
 
         tblScanner.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -100,7 +100,7 @@ public class FormMain extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(tblScanner);
 
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 200, 930, 330));
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 180, 930, 310));
 
         btnAnalizarSintactico.setBackground(new java.awt.Color(255, 153, 0));
         btnAnalizarSintactico.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -110,7 +110,7 @@ public class FormMain extends javax.swing.JFrame {
                 btnAnalizarSintacticoActionPerformed(evt);
             }
         });
-        getContentPane().add(btnAnalizarSintactico, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 200, 110, 330));
+        getContentPane().add(btnAnalizarSintactico, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 180, 110, 310));
 
         jPanel2.setBackground(new java.awt.Color(102, 0, 0));
 
@@ -125,17 +125,17 @@ public class FormMain extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(302, 302, 302)
                 .addComponent(jLabel1)
-                .addContainerGap(332, Short.MAX_VALUE))
+                .addContainerGap(342, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(jLabel1)
-                .addContainerGap(38, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(-2, 10, 1060, 120));
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1070, -1));
 
         jPanel4.setBackground(new java.awt.Color(102, 0, 0));
 
@@ -148,108 +148,23 @@ public class FormMain extends javax.swing.JFrame {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(261, 261, 261)
+                .addGap(262, 262, 262)
                 .addComponent(jLabel3)
-                .addContainerGap(273, Short.MAX_VALUE))
+                .addContainerGap(282, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
+                .addGap(24, 24, 24)
                 .addComponent(jLabel3)
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 540, 1060, 100));
+        getContentPane().add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 500, 1070, 100));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    
-    public LinkedList<TokenAnalisis> AnalizarLista(LinkedList ListaLexica) {
-        Queue<TokenAnalisis> ListaAux = new LinkedList<>();
-        Queue<TokenAnalisis> Lista = new LinkedList<>();
-        Queue<TokenAnalisis> ListaFinal = new LinkedList<>();
-        boolean error = false;
-        int contador;
-            
-        TokenAnalisis TokenEx = new TokenAnalisis();
-        TokenAnalisis TokenAux = new TokenAnalisis();
-        TokenAux = (TokenAnalisis) ListaLexica.remove();
-        ListaAux.add(TokenAux);
-        
-        while(ListaAux.isEmpty() == false && !ListaLexica.isEmpty())  
-        {
-            TokenAux = (TokenAnalisis) ListaLexica.poll();
-            ListaAux.add(TokenAux);
-            
-            if(TokenAux.produccion.equals(";") || TokenAux.produccion.equals("GO"))
-            {
-                TokenAux = (TokenAnalisis) ListaLexica.poll();
-                
-                if(TokenAux != null)
-                {
-                    if(TokenAux.produccion.equals(";") || TokenAux.produccion.equals("GO"))
-                    {
-                        ListaAux.add(TokenAux);
-                        TokenAux = (TokenAnalisis) ListaLexica.poll();
-                    }
-                }
-                contador = ListaAux.size();
-                for (int i = 0; i < contador; i++) {
-                    
-                    TokenEx = ListaAux.poll();
-                    if(TokenEx.produccion.equals("ERROR") || TokenEx.produccion.equals("ComentarioE") || TokenEx.produccion.equals("StringE"))
-                    {
-                        error =  true;
-                    }
-                    else
-                    {
-                        Lista.add(TokenEx);
-                    }
-                }
-                
-                if(error == false)
-                {
-                    if(Lista.isEmpty() == false)
-                    {
-                        while(Lista.isEmpty() == false)
-                        {
-                            ListaFinal.add(Lista.remove());
-                        }
-                        ListaAux.add(TokenAux);
-                    }
-                }
-                else
-                {
-                    Lista.clear();
-                    if(TokenAux != null)
-                    {
-                        ListaAux.add(TokenAux);
-                        error = false;
-                    }
-                }                
-            }  
-        }
-        if(!ListaAux.isEmpty())
-        {
-            while(ListaAux.isEmpty() == false)
-            {
-              if(ListaAux.peek() != null)
-              {
-              ListaFinal.add(ListaAux.remove());
-              }
-              else
-              {
-                  ListaAux.remove();
-              }
-            }
-        }
-        
-        ListaLexica = (LinkedList) ListaFinal;
-        return ListaLexica;
-    }
-    
         final String path = System.getProperty("user.dir");
         final String path2 = "/src/Analizador/";
        
@@ -284,7 +199,6 @@ public class FormMain extends javax.swing.JFrame {
 
         JFileChooser jfileChooser = new JFileChooser();
         jfileChooser.showOpenDialog(null);
-        
 
         String NombreArchivoEntrada ="";
 
@@ -313,7 +227,7 @@ public class FormMain extends javax.swing.JFrame {
 
             while (true) {
                 TokensLexico tokensLexico = lexer.yylex();
-
+                    
                 if (tokensLexico == null) {
                     Files.write(file, contenidoLista, StandardCharsets.UTF_8);
                     // bw.close();
@@ -562,47 +476,31 @@ public class FormMain extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAnalizarSintacticoActionPerformed
 
     private void btnAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarActionPerformed
-
-        //Se crea el cuadro de dialogo donde se obtendra el archivo Mini-SQL
+      
         JFileChooser chooser = new JFileChooser();
-        //Se aplica un filtro para que solo se reconozcan los archivos .MiniSQL
         chooser.showOpenDialog(null);
+        
         TokenAnalisis Analizador = new TokenAnalisis();
-        //se crea una lista para pasarla libre de errores y con formato al analizador sintactio
         LinkedList ListaLexica = new LinkedList();
 
         try {
-            //Se crea un lector con el cual se leéra el archivo seleccionado
             Reader lector;
             lector = new BufferedReader(new FileReader(chooser.getSelectedFile()));
-            //Se fija la ruta en el cuadro de texto destinado
-            //Se crea una instancia de la clase y se le envia la lectura al constructor
-            ALexico alexico = new ALexico(lector);
-            //se crea una variable para el resultado
-            String resultado = "";
+            ALexico alexico = new ALexico(lector);     
 
             while (true)
             {
-                //se crea una instancia de la clase tokens
                 Tokens tokens = alexico.yylex();
                 if (tokens == null)
                 {
-                    //Se concatena la palabra FIN cuando ya se finalizó el proceso
-                    resultado += "FIN";
-                    //Se coloca el texto en el JTextPanel
-                    txtResultado.setText(resultado);
-                    //Se manda a escribir la salida en un archivo de text
-                    //EscribirSalida(chooser.getSelectedFile().getName().replace(".minisql", " "), txtruta.getText(), resultado);
-                    //Se envía al analizador sintáctico.
-                    String Datos = ArchivoPrevioAnalisisLexico(AnalizarLista(ListaLexica));
-                    //Datos = LeerArchivo(chooser.getSelectedFile().getAbsolutePath());
+                    String Datos = AnalizadorLexico(AnalizarDatos(ListaLexica));
                     AnalizadorSintactico(Datos);
                     return;
                 }
+                // <editor-fold defaultstate="collapsed" desc="switch">  
                 switch (tokens) {
 
-                    case ERROR:
-                    resultado += "ERROR, Simbolo: "+alexico.lexeme+" no definido en el lenguaje" +"\n" + "Linea: "+alexico.line+"   "+"Posición Inicial: "+alexico.initialcolumn+"  "+"Posición Final: "+alexico.finalcolumn + "\n" + "\n";
+                    case ERROR:                    
                     Analizador = new TokenAnalisis(tokens,alexico.lexeme,alexico.line+1,alexico.initialcolumn, alexico.finalcolumn);
                     ListaLexica.offer(Analizador);
                     break;
@@ -610,16 +508,12 @@ public class FormMain extends javax.swing.JFrame {
                     case Identificador:
 
                     if(alexico.lexeme.length() > 31)
-                    {
-                        //Si el identificador es mayor a 31 caracteres
-                        resultado += "TOKEN " + ":" +" El elemento: "+alexico.lexeme.substring(0, 31) + " Es un " + tokens + "\n" + "ERROR, Identificador Truncado, Excedio el límite de caracteres permitidos"+"\n"+ "Linea: "+alexico.line+"   "+"Posición Inicial: "+alexico.initialcolumn+"  "+"Posición Final: "+alexico.finalcolumn + "\n" + "\n";
+                    {                      
                         Analizador = new TokenAnalisis(tokens,alexico.lexeme,alexico.line+1,alexico.initialcolumn, alexico.finalcolumn);
                         ListaLexica.offer(Analizador);
                     }
                     else
-                    {
-                        //Si el identificador cumple con las reglas
-                        resultado += "TOKEN "+ ":"+" El elemento: "+alexico.lexeme+ " Es un " + tokens + "\n" + "Linea: "+alexico.line +"   "+"Posición Inicial: "+alexico.initialcolumn+"  "+"Posición Final: "+alexico.finalcolumn + "\n" + "\n";
+                    {                      
                         Analizador = new TokenAnalisis(tokens,alexico.lexeme,alexico.line+1,alexico.initialcolumn, alexico.finalcolumn);
                         ListaLexica.offer(Analizador);
                     }
@@ -959,14 +853,12 @@ public class FormMain extends javax.swing.JFrame {
                     case SCROLL_LOCKS:
                     case OPTIMISTIC:
                     case TYPE_WARNING:
-                    //Si es una palabra reservada
-                    resultado += "TOKEN " + ":" + " El elemento: " + alexico.lexeme + " pertenece a las palabras " + tokens + "\n" + "Linea: " + alexico.line + "  " + "Posición Inicial: " + alexico.initialcolumn + "  " + "Posición Final: " + alexico.finalcolumn + "\n" + "\n";
+                   
                     Analizador = new TokenAnalisis(tokens,alexico.lexeme,alexico.line+1,alexico.initialcolumn, alexico.finalcolumn);
                     ListaLexica.offer(Analizador);
                     break;
 
                     case StringE:
-                    resultado += "ERROR, el string excede la cantidad de líneas permitidas \n" + "Linea: "+alexico.line+"   "+"Posición Inicial: "+alexico.initialcolumn+"  "+"Posición Final: "+alexico.finalcolumn + "\n" + "\n";
                     Analizador = new TokenAnalisis(tokens,alexico.lexeme,alexico.line+1,alexico.initialcolumn, alexico.finalcolumn);
                     ListaLexica.offer(Analizador);
                     break;
@@ -975,19 +867,15 @@ public class FormMain extends javax.swing.JFrame {
                     case String:
                     case Float:
                     case Bit:
-                    resultado += "TOKEN " + ":" + " El elemento: " + alexico.lexeme + " Es un " + tokens + "\n" + "Linea: " + alexico.line + "   " + "Posición Inicial: " + alexico.initialcolumn + "  " + "Posición Final: " + alexico.finalcolumn + "\n" + "\n";
                     Analizador = new TokenAnalisis(tokens,alexico.lexeme,alexico.line+1,alexico.initialcolumn, alexico.finalcolumn);
                     ListaLexica.offer(Analizador);
                     break;
 
                     case Comentario:
-                    //quitar comentario
-                    // resultado += "Comentario multilinea o simple" + "\n" + "Linea: "+lexer.line+"   "+"Posición Inicial: "+lexer.initialcolumn+"  "+"Posición Final: "+lexer.finalcolumn + "\n" + "\n";
+                    //DO NOTHING
                     break;
 
-                    case ComentarioE:
-                    //quitar comentario
-                    resultado += "ERROR, el comentario no posee el operador de cierre"+ "\n" + "Linea: "+alexico.line+"   "+"Posición Inicial: "+alexico.initialcolumn+"  "+"Posición Final: "+alexico.finalcolumn + "\n" + "\n";
+                    case ComentarioE:                    
                     Analizador = new TokenAnalisis(tokens,alexico.lexeme,alexico.line+1,alexico.initialcolumn, alexico.finalcolumn);
                     ListaLexica.offer(Analizador);
                     break;
@@ -995,20 +883,18 @@ public class FormMain extends javax.swing.JFrame {
                     default:
                     if(tokens.toString().contains("_"))
                     {
-                        String temporal = tokens.toString().replace("_", " ");
-                        resultado += "TOKEN " + ":"+" El elemento: "+alexico.lexeme + " Es " + temporal + "\n" + "Linea: "+alexico.line+"    "+"Posición Inicial: "+alexico.initialcolumn+"  "+"Posición Final: "+alexico.finalcolumn + "\n" + "\n";
                         Analizador = new TokenAnalisis(tokens,alexico.lexeme,alexico.line+1,alexico.initialcolumn, alexico.finalcolumn);
                         ListaLexica.offer(Analizador);
                     }
                     else
                     {
-                        resultado += "TOKEN " +":"+" El elemento: "+alexico.lexeme + " Es  " + tokens + "\n" + "Linea: "+alexico.line+"    "+"Posición Inicial: "+alexico.initialcolumn+"  "+"Posición Final: "+alexico.finalcolumn + "\n" + "\n";
                         Analizador = new TokenAnalisis(tokens,alexico.lexeme,alexico.line+1,alexico.initialcolumn, alexico.finalcolumn);
                         ListaLexica.offer(Analizador);
                     }
                     break;
                 }
             }
+            // </editor-fold>
 
         } catch (FileNotFoundException ex) {
             Logger.getLogger(FormMain.class.getName()).log(Level.SEVERE, null, ex);
@@ -1019,18 +905,21 @@ public class FormMain extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnAnalizarActionPerformed
   
-    public void AnalizadorSintactico(String data) throws Exception {
+    
+     //METODO ANALIZADOR SINTÁCTICO 
+     //ERRORES SINTÁCTICOS EN LISTA ENLAZADA
+     public void AnalizadorSintactico(String data) throws Exception {
 
         LinkedList<String> ErroresSintacticos = null;
         Sintax s = new Sintax(new Analizador.LexerCup(new StringReader(data)));
         String Contenido = "";
         
         txtResultado.setText("");        
-        //Se parsea el archivo
         s.parse();
-        //Se agrega la lista de errores sintacticos
+        
+        //Lista de errores sintácticos
         ErroresSintacticos = s.SyntacticErrors;
-        //Se concatenan los errores en una variable para luego asignarlos al cuadro de texto
+        
         for(String element: ErroresSintacticos){
                 if(Contenido.contains(element) == false)
                 {
@@ -1039,7 +928,6 @@ public class FormMain extends javax.swing.JFrame {
         }
         
         if (ErroresSintacticos.isEmpty()) {
-            
             txtResultado.setText("Archivo Sintácticamente Correcto");
             txtResultado.setForeground(Color.GREEN);
         }
@@ -1050,62 +938,54 @@ public class FormMain extends javax.swing.JFrame {
         
     }
     
-    
-    private String ArchivoPrevioAnalisisLexico(LinkedList ColaAnalisis) throws IOException {
+     //METODO ANALIZADOR LEXICO
+     private String AnalizadorLexico(LinkedList listaLexica) throws IOException {
+         
+        StringBuilder builder = new StringBuilder();
         
-        StringBuilder pw = new StringBuilder();
-
         int linea = 1;
-        int columnai = 0;
-        int columnaf = 0;
+        int columnaInicial = 0;
+        int columnaFinal = 0;
         String Linea = "";
-                
-        TokenAnalisis Tok;
+               
+        TokenAnalisis Token;
 
-        while (ColaAnalisis.peek() != null) 
-        {
-            Tok = (TokenAnalisis) ColaAnalisis.poll();
-            columnai = Tok.columnai;
+        while (listaLexica.peek() != null){
+            Token = (TokenAnalisis) listaLexica.poll();
+            columnaInicial = Token.columnai;
             
-            if (Tok.linea == linea)
-            {
-                while (columnai - columnaf > 1)
-                {
+            if (Token.linea == linea){
+                while (columnaInicial - columnaFinal > 1){
                     Linea += ' ';
-                    columnaf++;
+                    columnaFinal++;
                 }
-                Linea += Tok.produccion;
-                
-                columnaf = Tok.columnaf;
+                Linea += Token.produccion;
+                columnaFinal = Token.columnaf;
             }
-            else
-            {
+            else{
                 Linea += "\n";
-                pw.append(Linea);
+                builder.append(Linea);
                 linea++;
                 
-                while(Tok.linea != linea)
-                {
+                while(Token.linea != linea){
                     Linea = "";
                     Linea += "\n";
-                    pw.append(Linea);
+                    builder.append(Linea);
                     linea++;
                 }
-                
                 Linea = "";
-                Linea += Tok.produccion;
-                
-                columnaf = Tok.columnaf;
+                Linea += Token.produccion;
+                columnaFinal = Token.columnaf;
             }
         }
-        
-        pw.append(Linea);
-        return pw.toString();
+        builder.append(Linea);
+        return builder.toString();
     }
     
 
      public void generar(String Ruta1, String Ruta2, String[] RutaSintactico) throws IOException, Exception{
-        File file;
+        
+         File file;
         file = new File (Ruta1);
         JFlex.Main.generate(file);
         file = new File (Ruta2);
@@ -1136,6 +1016,83 @@ public class FormMain extends javax.swing.JFrame {
         file = new File (Ruta1);
         JFlex.Main.generate(file);
     }
+      
+     //METODO ANALIZAR DATOS
+     //ANALIZA LOS DATOS DE LA LISTA LEXICA
+     public LinkedList<TokenAnalisis> AnalizarDatos(LinkedList listaAnalizadorLexico) {
+        
+        Queue<TokenAnalisis> listaPivote = new LinkedList<>();
+        Queue<TokenAnalisis> lista = new LinkedList<>();
+        Queue<TokenAnalisis> listaLexica = new LinkedList<>();
+        
+        boolean bandera_error = false;
+        int count;
+            
+        TokenAnalisis TokenEx = new TokenAnalisis();
+        TokenAnalisis TokenAux = new TokenAnalisis();
+        TokenAux = (TokenAnalisis) listaAnalizadorLexico.remove();
+        listaPivote.add(TokenAux);
+        
+        while(listaPivote.isEmpty() == false && !listaAnalizadorLexico.isEmpty()) {
+            TokenAux = (TokenAnalisis) listaAnalizadorLexico.poll();
+            listaPivote.add(TokenAux);
+            
+            if(TokenAux.produccion.equals(";") || TokenAux.produccion.equals("GO")){
+                TokenAux = (TokenAnalisis) listaAnalizadorLexico.poll();
+                
+                if(TokenAux != null){
+                    if(TokenAux.produccion.equals(";") || TokenAux.produccion.equals("GO")){
+                        listaPivote.add(TokenAux);
+                        TokenAux = (TokenAnalisis) listaAnalizadorLexico.poll();
+                    }
+                }
+                count = listaPivote.size();
+                for (int i = 0; i < count; i++) {
+                    
+                    TokenEx = listaPivote.poll();
+                    //Posibles errores
+                    if(TokenEx.produccion.equals("ERROR") || TokenEx.produccion.equals("ComentarioE") || TokenEx.produccion.equals("StringE")){
+                        bandera_error =  true;
+                    }
+                    else {
+                        lista.add(TokenEx);
+                    }
+                }
+                
+                if(bandera_error == false) {
+                    if(lista.isEmpty() == false) {
+                        while(lista.isEmpty() == false) {
+                            listaLexica.add(lista.remove());
+                        }
+                        listaPivote.add(TokenAux);
+                    }
+                }
+                else {
+                    lista.clear();
+                    if(TokenAux != null){
+                        listaPivote.add(TokenAux);
+                        bandera_error = false;
+                    }
+                }                
+            }  
+        }
+        if(!listaPivote.isEmpty())
+        {
+            while(listaPivote.isEmpty() == false)
+            {
+              if(listaPivote.peek() != null)
+              {
+              listaLexica.add(listaPivote.remove());
+              }
+              else
+              {
+                  listaPivote.remove();
+              }
+            }
+        }
+        listaAnalizadorLexico = (LinkedList) listaLexica;
+        return listaAnalizadorLexico;
+    }  
      
         // <editor-fold defaultstate="collapsed" desc="writeTXT">  
     /*
@@ -1164,9 +1121,7 @@ public class FormMain extends javax.swing.JFrame {
 }
     */
     // </editor-fold>
-     
-     
-     
+    
     /**
      * @param args the command line arguments
      */
