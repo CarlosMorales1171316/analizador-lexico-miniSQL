@@ -918,7 +918,7 @@ public class FormMain extends javax.swing.JFrame {
         s.parse();
         
         //Lista de errores sintácticos
-        ErroresSintacticos = s.erroresSintacticos;
+        ErroresSintacticos = s.SyntacticErrors;
         
         for(String element: ErroresSintacticos){
                 if(Contenido.contains(element) == false)
