@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 parser code
 {: 
 
-    public LinkedList<String> SyntacticErrors = new LinkedList<String>();
+    public LinkedList<String> erroresSintacticos = new LinkedList<String>();
     private Symbol s;
 
     public final Class getSymbolContainer() {
@@ -28,7 +28,7 @@ parser code
                   Auxiliar = " " + Auxiliar + " ";
                   list.add(Auxiliar);
         }
-        SyntacticErrors.add("* Error Sintactico. Columna: " + (s.left+1) + " Linea: " + (s.right+1) + ". Simbolo:  \'" + s.value + "\'  * Se esperaba: " + list);
+        erroresSintacticos.add("Error Sintáctico  Linea: " + (s.right+1) + " Columna: " + (s.left+1) + " Simbolo: " + s.value);
     }
 
     public void unrecovered_syntax_error(Symbol cur_token){
@@ -41,7 +41,7 @@ parser code
                   Auxiliar = " " + Auxiliar + " ";
                   list.add(Auxiliar);
         }
-        SyntacticErrors.add("* Error Sintactico. Columna: " + (s.left+1) + " Linea: " + (s.right+1) + ". Simbolo:  \'" + s.value + "\'  * Se esperaba: " + list);
+        erroresSintacticos.add("Error Sintáctico  Linea: " + (s.right+1) + " Columna: " + (s.left+1) + " Simbolo: " + s.value);
     }
 
 
