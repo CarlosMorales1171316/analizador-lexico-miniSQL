@@ -7,9 +7,9 @@ import java_cup.runtime.Symbol;
 %cup
 %full
 %line
-%char
+%column
 
-/*DICCIONARIOS*/
+/*Alfabeto-Diccionarios*/
 L=[a-zA-Z]+
 D=[0-9]+
 Digito = [0-9]
@@ -28,7 +28,6 @@ Salto = \r| \n| \r\n
 EspacioE = [ \t]
 Empty = {Salto} | {EspacioE}
 
-/*VARIABLES*/
 %{
     private Symbol symbol(int type, Object value){   
         return new Symbol(type, yyline, yycolumn, value);
@@ -379,7 +378,6 @@ Empty = {Salto} | {EspacioE}
 "TYPE_WARNING" {return new Symbol (sym.TYPE_WARNING,yycolumn,yyline, yytext());}
 "NAME" {return new Symbol (sym.NAME,yycolumn,yyline, yytext());}
 "FILENAME" {return new Symbol (sym.FILENAME,yycolumn,yyline, yytext());}
-"FILE" {return new Symbol (sym.FILE,yycolumn,yyline, yytext());}
 "KB" {return new Symbol (sym.KB,yycolumn,yyline, yytext());}
 "GB" {return new Symbol (sym.GB,yycolumn,yyline, yytext());}
 "TB" {return new Symbol (sym.TB,yycolumn,yyline, yytext());}
@@ -388,8 +386,10 @@ Empty = {Salto} | {EspacioE}
 "UNLIMITED" {return new Symbol (sym.UNLIMITED,yycolumn,yyline, yytext());}
 "FILEGROWTH" {return new Symbol (sym.FILEGROWTH,yycolumn,yyline, yytext());}
 "MODULAR" {return new Symbol (sym.MODULAR,yycolumn,yyline, yytext());}
-";"{Empty}*"GO" {return new Symbol (sym.Punto_y_coma_GO,yycolumn,yyline, yytext());}
 "NVARCHAR" {return new Symbol (sym.NVARCHAR,yycolumn,yyline, yytext());}
+"MONEY" {return new Symbol (sym.MONEY,yycolumn,yyline, yytext());}
+"DATETIME" {return new Symbol (sym.DATETIME,yycolumn,yyline, yytext());}
+";"{Empty}*"GO" {return new Symbol (sym.Punto_y_coma_GO,yycolumn,yyline, yytext());}
 
 /*WHITESPACE*/
 {Espacio}+ {/*Ignore*/}
@@ -410,8 +410,6 @@ Empty = {Salto} | {EspacioE}
 ("'"([^'\r\n]*)) {return new Symbol(sym.StringE, yycolumn, yyline, yytext());}
 ({Numero}+"."{Numero}*) {return new Symbol(sym.Float, yycolumn, yyline, yytext());}
 ({Numero}+"."{Numero}*(E|e)?("+"|"-")?{Numero}?) {return new Symbol(sym.Float, yycolumn, yyline, yytext());}
-
-/*OPERADORES*/
 "=" {return new Symbol(sym.Igual, yycolumn, yyline, yytext());}
 ("+") {return new Symbol(sym.Suma, yycolumn, yyline, yytext());}
 "-" {return new Symbol(sym.Resta, yycolumn, yyline, yytext());}

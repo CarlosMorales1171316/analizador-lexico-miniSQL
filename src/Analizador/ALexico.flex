@@ -7,7 +7,7 @@ import static Analizador.Tokens.*;
 %line
 %column
 
-/*DICCIONARIOS*/
+/*Alfabeto-Diccionarios*/
 L=[a-zA-Z]+
 D=[0-9]+
 Digito = [0-9]
@@ -33,8 +33,8 @@ Empty = {Salto} | {EspacioE}
     public int initialcolumn;
     public int finalcolumn;
 %}
-
 %%
+
 /*RESERVADAS*/
 "ADD" {lexeme = yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength() -1; return ADD;}
 "EXTERNAL" {lexeme = yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength() -1; return EXTERNAL;}
@@ -382,8 +382,10 @@ Empty = {Salto} | {EspacioE}
 "UNLIMITED" {lexeme = yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength() -1; return UNLIMITED;} 
 "FILEGROWTH" {lexeme = yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength() -1; return FILEGROWTH;}
 "MODULAR" {lexeme = yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength() -1; return MODULAR;}
-"EXECUTE_AS_CLAUSE" {lexeme = yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength() -1; return EXECUTE_AS_CLAUSE;}
 ";"{Empty}*"GO" {lexeme = yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength() -1; return PYCGO;}
+"NVARCHAR" {lexeme = yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength() -1; return NVARCHAR;}
+"MONEY" {lexeme = yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength() -1; return MONEY;}
+"DATETIME" {lexeme = yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength() -1; return DATETIME;}
 
 /*WHITESPACE*/
 {Espacio}+ {/*Ignore*/}
@@ -404,8 +406,6 @@ Empty = {Salto} | {EspacioE}
 ("'"([^'\r\n]*)) {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return StringE;}
 ({Numero}+"."{Numero}*) {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Float;}
 ({Numero}+"."{Numero}*(E|e)?("+"|"-")?{Numero}?) {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Float;}
-
-/*OPERADORES*/
 "=" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Igual;}
 ("+") {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Suma;}
 "-" {lexeme=yytext(); line = yyline; initialcolumn = yycolumn; finalcolumn = yycolumn + yylength()-1; return Resta;}
