@@ -387,7 +387,7 @@ Empty = {Salto} | {EspacioE}
 "UNLIMITED" {return new Symbol (sym.UNLIMITED,yycolumn,yyline, yytext());}
 "FILEGROWTH" {return new Symbol (sym.FILEGROWTH,yycolumn,yyline, yytext());}
 "MODULAR" {return new Symbol (sym.MODULAR,yycolumn,yyline, yytext());}
-";"{Empty}*"GO" {return new Symbol (sym.PYCGO,yycolumn,yyline, yytext());}
+";"{Empty}*"GO" {return new Symbol (sym.Punto_y_coma_GO,yycolumn,yyline, yytext());}
 "NVARCHAR" {return new Symbol (sym.NVARCHAR,yycolumn,yyline, yytext());}
 "MONEY" {return new Symbol (sym.MONEY,yycolumn,yyline, yytext());}
 "DATETIME" {return new Symbol (sym.DATETIME,yycolumn,yyline, yytext());}
