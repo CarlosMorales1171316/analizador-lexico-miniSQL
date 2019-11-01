@@ -1,6 +1,7 @@
 package Analizador;
 import java_cup.runtime.Symbol;
 
+/* Sección de declaraciones de JFlex */
 %%
 %class LexerCup
 %type java_cup.runtime.Symbol
@@ -386,10 +387,11 @@ Empty = {Salto} | {EspacioE}
 "UNLIMITED" {return new Symbol (sym.UNLIMITED,yycolumn,yyline, yytext());}
 "FILEGROWTH" {return new Symbol (sym.FILEGROWTH,yycolumn,yyline, yytext());}
 "MODULAR" {return new Symbol (sym.MODULAR,yycolumn,yyline, yytext());}
+";"{Empty}*"GO" {return new Symbol (sym.PYCGO,yycolumn,yyline, yytext());}
 "NVARCHAR" {return new Symbol (sym.NVARCHAR,yycolumn,yyline, yytext());}
 "MONEY" {return new Symbol (sym.MONEY,yycolumn,yyline, yytext());}
 "DATETIME" {return new Symbol (sym.DATETIME,yycolumn,yyline, yytext());}
-";"{Empty}*"GO" {return new Symbol (sym.Punto_y_coma_GO,yycolumn,yyline, yytext());}
+"DELAYED_DURABILITY" {return new Symbol (sym.DELAYED_DURABILITY,yycolumn,yyline, yytext());}
 
 /*WHITESPACE*/
 {Espacio}+ {/*Ignore*/}
@@ -401,7 +403,7 @@ Empty = {Salto} | {EspacioE}
 ("/*"[^\r\n.*]*) {return new Symbol(sym.ComentarioE, yycolumn, yyline, yytext());}
 //("/*"([^*/])*) {return new Symbol(sym.ComentarioE, yycolumn, yyline, yytext());}
 
-/*CONSTANTES*/
+/*OPERADORES*/
 ({Numero}) {return new Symbol(sym.Int, yycolumn, yyline, yytext());}
 ("-"{Numero})|("+"{Numero}) {return new Symbol(sym.Int, yycolumn, yyline, yytext());}
 (0|1|NULL) {return new Symbol(sym.Bit, yycolumn, yyline, yytext());}
@@ -448,5 +450,3 @@ Empty = {Salto} | {EspacioE}
 {L}({L}|{D}|{Guion})* {return new Symbol(sym.Identificador, yycolumn, yyline, yytext());}
 
 . {return new Symbol(sym.ERROR, yycolumn, yyline, yytext());}
-
-
