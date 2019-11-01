@@ -1,23 +1,29 @@
-# MiniSQL Proyecto de Compiladores
+# analizador-lexico-miniSQL
+```
+Universidad Rafael Landivar  
+Carlos Andrés Morales Lara - 1171316  
+Proyecto - Fase #1 - Analizador Léxico
+```
+#### Implementación de Analizador Léxico con Jflex
+## Funcionamiento
+![img](https://i.imgur.com/oBn4jVs.png)
+Primero debemos de presionar el botón ***Generar archivo Lexer.java*** este botón lo que hará es que con la ayuda de la librería  [Jflex]( https://jflex.de/) este leerá el archivo llamado “Lexer.flex” el cual contiene toda la estructura de nuestros diccionarios, tokens y expresiones regulares que servirán para la base del analizador léxico luego se compilara en vivo para crear una clase llamada “Lexer.java” y el programa se cerrara.
 
+Luego con la clase "Lexer.java" ya creada ya se podrá continuar con el siguiente botón llamado ***Analizar***.
+![img](https://i.imgur.com/ncuycT8.png)
+Al presionar el botón ***Analizar*** se abrirá una ventana en el cual podremos seleccionar el archivo de entrada que queramos, en este caso un archivo con extensión “.sql”.
 
-# Contenibles
-La primera fase del proyecto cuenta con:
-- Codigo Fuente
-- Ejecutable .jar
+Luego de seleccionar el archivo de entrada, se mostrará los resultados del analizador léxico en dos formas:
+1. Jtable
+![img](https://i.imgur.com/71vOZJx.png)
+2. Archivo de salida con extensión ".out"
+![img](https://i.imgur.com/o0A2WpS.png)
 
-# Objetivo y Funcionalidad
+Manejo de errores: 
+- Error por carácter inválido: Estos errores solo se mostrarán cuando el scanner lea un carácter que no sea parte de los diccionarios o expresiones regulares definidos.
+- Error por comentario sin terminar: Estos errores solo se indicarán cuando se encuentre un comentario multilinea sin cerrar, es decir, sin su simbolo de cierre "*/".
+- Error por cadena de carácteres no válidas: Estos errores se mostrarán solamente cuando el scanner detecte que una constante de tipo cadena no tenga su apostrofe de cierre y que se mantenga en la misma línea. 
+- Error por longitud excedida en identificador: Este error se dará cuando la palabra analizada de un token de tipo identificador sea mayor a 31 carácteres, se agarrará los primeros 31 carácteres y se ignorará el resto.
 
-El objetivo de la primera parte del Compilador (Analizador Léxico) es indentificar con precisión cada una de las expresiones, simbolos y oraciones que esten dentro del lenguaje MiniSQL que ya ha sido definido previamente.
-
-Por lo que el analizador leera un archivo .minisql el cual contendra instrucciones en lenguaje MiniSQL y analizara cada una de las instrucciones y líneas para ver si coincide o no con algún TOKEN perteneciente al lenguaje, en caso contrario podra mostrar:
-
-- ERROR, Simbolo no identificado (Esto indica que el simbolo o palabra no se encuentra en el lenguaje .minisql)
-- ERROR, comentario no terminado (Indica que el comentario nunca ha sido finalizado)
-- ERROR, Identificador fuera de rango (Indica que el identificador excedió la cantidad límite de 31 caracteres)
-
-el analizador ignorará los comentarios y solo mostrara los TOKENS, indicando en que línea se encuentran y la columna donde empieza y termina el respectivo token, luego generará la salida en un archivo .out el cual contendra el analisis del archivo ingresado y se encontrara en la misma ubicación de donde se obtuvo el archivo .txt para analizar.
-
-El analizador léxico es un analizador robusto, ya que reconoce los errores y tokens correctos, analizando cada sentencia de forma separa de acuerdo a los parámetros establecidos por lo que cumple con los requisitos requeridos por el lenguaje.
-
-
+Creo que mi programa funciona correctamente y es robusto ya que se realizó con tiempo y paciencia. Además, se realizaron demasiadas pruebas para cada tipo de Token, para cada Expresión Regular se hicieron todo tipo de pruebas posibles para todos los n casos que pudieran venir de entrada.
+ 
